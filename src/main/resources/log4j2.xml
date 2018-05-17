@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="INFO">
+
+    <Properties>
+        <!-- Write info's to console -->
+        <!--<Property name="console-pattern">%d{yyyy-MM-dd HH:mm:ss,SSS} %-5level [%thread] %logger{1} %X - %msg%n</Property>-->
+        <Property name="console-pattern">%highlight{%d{yyyy-MM-dd HH:mm:ss,SSS} %-5level [%thread] %logger{1} %x - %msg%n}{FATAL=white, ERROR=red, WARN=blue, INFO=black, DEBUG=green, TRACE=blue}</Property>
+        <!--<Property name="console-pattern">%d{HH:mm:ss.SSS} [%t] %-5level %logger{1} - %msg%n</Property>-->
+
+        <!-- Write debug's to file -->
+        <Property name="all-to-file-level">DEBUG</Property>
+        <!-- Zipped file name (old logs) -->
+        <Property name="all-to-file-pattern">%d{yyyy-MM-dd HH:mm:ss,SSS} %-5level [%thread] %logger{1} %x - %msg%n</Property>
+        <!-- Buffered file io params, file to file by big chunks -->
+        <Property name="all-file-bufferSize">262144</Property>
+        <!-- Length of queue from arbs thread to file io thread -->
+        <Property name="all-async-queue-length">262144</Property>
+        <!-- 256 * 1024 -->
+        <Property name="all-Nth-hours-new-file">1</Property>
+        <!-- Every N-hours create new log-file and zip ald file-->
+
+        <!-- Write warn+error to separate file -->
+        <Property name="problems-filename">log/problems.log</Property>
+        <Property name="problems-pattern">%d{yyyy-MM-dd HH:mm:ss,SSS} %-5level [%thread] %logger{1} %X - %msg%n</Property>
+        <Property name="notFound-pattern">%msg%n</Property>
+    </Properties>
+
+
+    <Appenders>
+        <!-- INFO's to console -->
+        <Console name="CONSOLE" target="SYSTEM_ERR">
+            <PatternLayout pattern="${console-pattern}"/>
+        </Console>
+
+        <!-- All logs from root to file -->
+        <File name="FILE_ALL"
+              fileName="log/all.log"
+              immediateFlush="false"
+              append="true"
+              bufferSize="${all-file-bufferSize}">
+            <PatternLayout pattern="${all-to-file-pattern}"/>
+        </File>
+
+        <Async name="FILE_ALL_ASYNC" blocking="false" bufferSize="${all-async-queue-length}" ignoreExceptions="false"
+               includeLocation="false">
+            <AppenderRef ref="FILE_ALL"/>
+        </Async>
+
+        <!-- All WARN's to swparate file -->
+        <File name="FILE_WITH_PROBLEMS" fileName="${problems-filename}">
+            <PatternLayout pattern="${problems-pattern}"/>
+        </File>
+
+    </Appenders>
+
+    <Loggers>
+        <Root level="ALL" includeLocation="false">
+            <AppenderRef ref="CONSOLE" level="DEBUG"/>
+            <AppenderRef ref="FILE_ALL_ASYNC" level="${all-to-file-level}"/>
+            <AppenderRef ref="FILE_WITH_PROBLEMS" level="WARN"/>
+        </Root>
+    </Loggers>
+</Configuration>
