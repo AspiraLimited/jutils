@@ -1,10 +1,10 @@
 package com.allbestbets.jutils.mysql;
 
-abstract class BaseDao {
+public abstract class BaseDao {
 
-    final MysqlDB mysqlDB;
+    protected final MysqlDB mysqlDB;
 
-    BaseDao(MysqlDB mysqlDB) {
+    protected BaseDao(MysqlDB mysqlDB) {
         this.mysqlDB = mysqlDB;
     }
 }
