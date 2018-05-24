@@ -7,6 +7,7 @@ import static org.apache.logging.log4j.LogManager.getLogger;
 
 public class AbbLogger {
     private final Logger logger;
+    private String prefix; // TODO
 
     public AbbLogger() {
         this(new Error().getStackTrace()[1].getClassName());
@@ -14,6 +15,10 @@ public class AbbLogger {
 
     private AbbLogger(String name) {
         logger = getLogger(name);
+    }
+
+    public void setPrefix(String prefix) {
+        this.prefix = prefix;
     }
 
     public void trace(String s) {
@@ -84,6 +89,10 @@ public class AbbLogger {
         logger.info(s);
     }
 
+    public void info(Throwable throwable) {
+        logger.info(throwable);
+    }
+
     public void info(String s, Object o) {
         logger.info(s, o);
     }
@@ -123,6 +132,11 @@ public class AbbLogger {
     public void error(String s) {
         logger.error(s);
         NewRelic.noticeError(s);
+    }
+
+    public void error(Throwable throwable) {
+        logger.error(throwable);
+        NewRelic.noticeError(throwable);
     }
 
     public void error(String s, Object o) {

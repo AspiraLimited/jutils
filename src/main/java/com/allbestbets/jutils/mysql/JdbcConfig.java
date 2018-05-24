@@ -36,9 +36,13 @@ public class JdbcConfig {
     public long prepStmtCacheSqlLimit;
 
     public String url() {
+        return url(null);
+    }
+
+    public String url(String database) {
         return "jdbc:mariadb:" +
                 failover + "//" +
                 hosts.stream().map(s -> s + ":" + port).collect(joining(",")) + "/" +
-                database;
+                (database == null ? this.database : database);
     }
 }

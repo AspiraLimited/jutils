@@ -18,17 +18,21 @@ public class MysqlDB {
     private final HikariDataSource readPool;
     private final HikariDataSource writePool;
 
-    public MysqlDB() throws IOException {
-        this.readPool = initPool("/config/ReadJdbcConfig.json", "read");
-        this.writePool = initPool("/config/WriteJdbcConfig.json", "write");
+    public MysqlDB(String database) throws IOException {
+        this.readPool = initPool("/config/ReadJdbcConfig.json", "read", database);
+        this.writePool = initPool("/config/WriteJdbcConfig.json", "write", database);
     }
 
     public static MysqlDB mysqlDB() {
+        return mysqlDB(null);
+    }
+
+    public static MysqlDB mysqlDB(String database) {
         if (mysqlDB != null) return mysqlDB;
 
         synchronized (MysqlDB.class) {
             try {
-                mysqlDB = new MysqlDB();
+                mysqlDB = new MysqlDB(database);
             } catch (IOException e) {
                 throw new Error(e);
             }
@@ -55,6 +59,10 @@ public class MysqlDB {
     }
 
     private HikariDataSource initPool(String fileName, String name) throws IOException {
+        return initPool(fileName, name, null);
+    }
+
+    private HikariDataSource initPool(String fileName, String name, String database) throws IOException {
         try {
             HikariDataSource pool = new HikariDataSource();
 
@@ -67,7 +75,7 @@ public class MysqlDB {
             pool.setIdleTimeout(jdbcConfig.idleTimeout);
             pool.setMaxLifetime(jdbcConfig.maxLifetime);
             pool.setDriverClassName(jdbcConfig.driver);
-            pool.setJdbcUrl(jdbcConfig.url());
+            pool.setJdbcUrl(jdbcConfig.url(database));
             pool.setReadOnly(jdbcConfig.isReadOnly);
             // pool.setLeakDetectionThreshold(15000);
             // pool.setConnectionTestQuery("SELECT 1");
