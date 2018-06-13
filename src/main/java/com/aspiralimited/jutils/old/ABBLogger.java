@@ -1,6 +1,6 @@
-//package com.allbestbets.jutils.old;
+//package com.aspiralimited.jutils.old;
 //
-//import com.allbestbets.jutils.old.apm.APMLogger;
+//import com.aspiralimited.jutils.old.apm.APMLogger;
 //import IAPMLogger;
 //import org.apache.commons.lang.exception.ExceptionUtils;
 //import org.apache.log4j.Logger;
