@@ -12,6 +12,6 @@ public class AbbLoggerTest {
 
         logger.error("test error msg from jutils");
 
-        Thread.sleep(3000);
+        Thread.sleep(10000);
     }
 }
