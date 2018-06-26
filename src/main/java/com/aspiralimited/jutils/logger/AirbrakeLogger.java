@@ -7,11 +7,11 @@ public class AirbrakeLogger {
 
     private static Notifier notifier = null;
 
-    public static void load(int projectId, String projectKey, String environment) {
-        load(projectId, projectKey, environment, false);
+    public static Notifier load(int projectId, String projectKey, String environment) {
+        return load(projectId, projectKey, environment, false);
     }
 
-    public static void load(int projectId, String projectKey, String environment, boolean force) {
+    public static Notifier load(int projectId, String projectKey, String environment, boolean force) {
         if (!force && notifier != null)
             throw new RuntimeException("already loaded AirbrakeLogger");
 
@@ -24,7 +24,19 @@ public class AirbrakeLogger {
                         return notice;
                     });
         }
+
+        return notifier;
     }
+
+    public static void setContext(String key, String value) {
+        if (notifier == null) return;
+        notifier.addFilter(
+                (Notice notice) -> {
+                    notice.setContext(key, value);
+                    return notice;
+                });
+    }
+
 
     static void error(String className, String msg) {
         if (notifier == null) return;
