@@ -1,7 +1,7 @@
 package com.aspiralimited.jutils.redis;
 
 
-import com.aspiralimited.jutils.AbbLogger;
+import com.aspiralimited.jutils.logger.AbbLogger;
 import redis.clients.jedis.HostAndPort;
 
 import java.io.FileInputStream;

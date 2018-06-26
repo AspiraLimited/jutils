@@ -1,6 +1,6 @@
 package com.aspiralimited.jutils.redis;
 
-import com.aspiralimited.jutils.AbbLogger;
+import com.aspiralimited.jutils.logger.AbbLogger;
 import com.aspiralimited.jutils.Cache;
 
 import static java.util.concurrent.TimeUnit.SECONDS;

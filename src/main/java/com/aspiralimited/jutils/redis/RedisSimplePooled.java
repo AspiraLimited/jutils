@@ -1,6 +1,6 @@
 package com.aspiralimited.jutils.redis;
 
-import com.aspiralimited.jutils.AbbLogger;
+import com.aspiralimited.jutils.logger.AbbLogger;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;

@@ -6,6 +6,7 @@ import org.junit.Test;
 import java.util.ArrayList;
 
 public class TestIntegerUtils {
+
     @Test
     public void toSourceBits() {
         Assert.assertEquals(new ArrayList<Integer>() {{

@@ -1,6 +1,6 @@
 package com.aspiralimited.jutils.mysql;
 
-import com.aspiralimited.jutils.AbbLogger;
+import com.aspiralimited.jutils.logger.AbbLogger;
 import com.aspiralimited.jutils.ThrowingConsumer;
 import com.aspiralimited.jutils.ConfigLoader;
 import com.zaxxer.hikari.HikariDataSource;

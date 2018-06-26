@@ -1,7 +1,7 @@
 package com.aspiralimited.jutils.activerecord;
 
 
-import com.aspiralimited.jutils.AbbLogger;
+import com.aspiralimited.jutils.logger.AbbLogger;
 import com.aspiralimited.jutils.Triple;
 
 import java.lang.reflect.Method;
