@@ -4,7 +4,7 @@ import com.newrelic.api.agent.NewRelic;
 
 import java.util.Map;
 
-class NewRelicLogger {
+public class NewRelicLogger {
 
     public static void error(String className, String msg) {
         NewRelic.noticeError(className + ": " + msg);

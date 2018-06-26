@@ -5,7 +5,7 @@ import com.rollbar.notifier.Rollbar;
 import com.rollbar.notifier.config.Config;
 import com.rollbar.notifier.config.ConfigBuilder;
 
-class RollbarLogger {
+public class RollbarLogger {
 
     private static Rollbar rollbar = null;
 

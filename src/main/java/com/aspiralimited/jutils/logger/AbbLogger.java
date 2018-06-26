@@ -131,6 +131,10 @@ public class AbbLogger {
         log4j.warn(s, throwable);
     }
 
+    public void warn(Throwable throwable) {
+        log4j.warn(throwable);
+    }
+
     public void error(String msg) {
         log4j.error(msg);
 
