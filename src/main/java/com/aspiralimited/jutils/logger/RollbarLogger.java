@@ -15,7 +15,7 @@ class RollbarLogger {
 
     public static void load(String accessToken, String environment, boolean force) {
         if (!force && rollbar != null)
-            throw new RuntimeException("already loaded AirbrakeLogger");
+            throw new RuntimeException("already loaded RollbarLogger");
 
         synchronized (RollbarLogger.class) {
             Config config = ConfigBuilder.withAccessToken(accessToken)
