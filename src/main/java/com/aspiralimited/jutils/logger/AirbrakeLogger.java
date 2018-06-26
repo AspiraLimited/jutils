@@ -40,22 +40,22 @@ public class AirbrakeLogger {
 
     static void error(String className, String msg) {
         if (notifier == null) return;
-        notifier.report(new Exception(className + ": " + msg));
+        notifier.report(new Exception(className + ": " + String.valueOf(msg)));
     }
 
     static void error(String className, String msg, Object object) {
         if (notifier == null) return;
-        notifier.report(new Exception(className + ": " + msg + ": " + object.toString()));
+        notifier.report(new Exception(className + ": " + String.valueOf(msg) + ": " + object.toString()));
     }
 
     static void error(String className, String msg, Object obj1, Object obj2) {
         if (notifier == null) return;
-        notifier.report(new Exception(className + ": " + msg + ": [" + obj1.toString() + ", [" + obj2.toString() + "]"));
+        notifier.report(new Exception(className + ": " + String.valueOf(msg) + ": [" + obj1.toString() + ", [" + obj2.toString() + "]"));
     }
 
     static void error(String className, String msg, Throwable throwable) {
         if (notifier == null) return;
-        notifier.report(new Exception(className + ": " + msg, throwable));
+        notifier.report(new Exception(className + ": " + String.valueOf(msg), throwable));
     }
 
     static void error(String className, Throwable throwable) {

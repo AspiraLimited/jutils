@@ -14,7 +14,7 @@ public class AbbLogger {
         this(new Error().getStackTrace()[1].getClassName());
     }
 
-    private AbbLogger(String className) {
+    public AbbLogger(String className) {
         this.className = className;
         this.log4j = getLogger(className);
     }

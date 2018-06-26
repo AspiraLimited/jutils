@@ -28,22 +28,22 @@ public class RollbarLogger {
 
     static void error(String className, String msg) {
         if (rollbar == null) return;
-        rollbar.error(new Exception(className + ": " + msg));
+        rollbar.error(new Exception(className + ": " + String.valueOf(msg)));
     }
 
     static void error(String className, String msg, Object object) {
         if (rollbar == null) return;
-        rollbar.error(new Exception(className + ": " + msg + ": " + object.toString()));
+        rollbar.error(new Exception(className + ": " + String.valueOf(msg) + ": " + object.toString()));
     }
 
     static void error(String className, String msg, Object obj1, Object obj2) {
         if (rollbar == null) return;
-        rollbar.error(new Exception(className + ": " + msg + ": [" + obj1.toString() + ", [" + obj2.toString() + "]"));
+        rollbar.error(new Exception(className + ": " + String.valueOf(msg) + ": [" + obj1.toString() + ", [" + obj2.toString() + "]"));
     }
 
     static void error(String className, String msg, Throwable throwable) {
         if (rollbar == null) return;
-        rollbar.error(throwable, className + ": " + msg);
+        rollbar.error(throwable, className + ": " + String.valueOf(msg));
     }
 
     static void error(String className, Throwable throwable) {
