@@ -1,8 +1,8 @@
 package com.aspiralimited.jutils.logger;
 
-import org.slf4j.Logger;
+import org.apache.logging.log4j.Logger;
 
-import static org.slf4j.LoggerFactory.getLogger;
+import static org.apache.logging.log4j.LogManager.getLogger;
 
 public class AbbLogger {
     private final Logger log4j;

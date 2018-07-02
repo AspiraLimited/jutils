@@ -7,7 +7,6 @@ import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.BiConsumer;
 import java.util.function.Supplier;
 
-import static com.aspiralimited.jutils.MapUtil.newMap;
 import static java.lang.System.currentTimeMillis;
 import static java.util.Comparator.comparingLong;
 import static java.util.stream.Collectors.groupingBy;
