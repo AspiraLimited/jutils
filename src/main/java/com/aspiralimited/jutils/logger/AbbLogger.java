@@ -1,8 +1,8 @@
 package com.aspiralimited.jutils.logger;
 
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
 
-import static org.apache.logging.log4j.LogManager.getLogger;
+import static org.slf4j.LoggerFactory.getLogger;
 
 public class AbbLogger {
     private final Logger log4j;
@@ -96,7 +96,7 @@ public class AbbLogger {
     }
 
     public void info(Throwable throwable) {
-        log4j.info(throwable);
+        log4j.info("{}", throwable);
     }
 
     public void info(String s, Object o) {
@@ -136,7 +136,7 @@ public class AbbLogger {
     }
 
     public void warn(Throwable throwable) {
-        log4j.warn(throwable);
+        log4j.warn("{}", throwable);
     }
 
     public void error(String msg) {
@@ -148,7 +148,7 @@ public class AbbLogger {
     }
 
     public void error(Throwable throwable) {
-        log4j.error(throwable);
+        log4j.error("{}", throwable);
 
         NewRelicLogger.error(className, throwable);
         AirbrakeLogger.error(className, throwable);
