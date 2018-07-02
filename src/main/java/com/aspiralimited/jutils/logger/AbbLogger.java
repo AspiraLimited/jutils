@@ -19,6 +19,10 @@ public class AbbLogger {
         this.log4j = getLogger(className);
     }
 
+    public AbbLogger(Class klass) {
+        this(klass.getSimpleName());
+    }
+
     public void setPrefix(String prefix) {
         this.prefix = prefix;
     }

@@ -1,12 +1,13 @@
 package com.aspiralimited.jutils.mysql;
 
-import com.aspiralimited.jutils.logger.AbbLogger;
-import com.aspiralimited.jutils.ThrowingConsumer;
 import com.aspiralimited.jutils.ConfigLoader;
+import com.aspiralimited.jutils.ThrowingConsumer;
+import com.aspiralimited.jutils.logger.AbbLogger;
 import com.zaxxer.hikari.HikariDataSource;
 
 import java.io.IOException;
 import java.sql.*;
+import java.util.Set;
 
 
 public class MysqlDB {
@@ -135,6 +136,42 @@ public class MysqlDB {
         });
     }
 
+//    public int update(Connection conn, String sql) {
+//        return update(conn, sql, x -> {
+//        });
+//    }
+
+//    public int update(String sql, ThrowingConsumer<PreparedStatement> psConsumer) {
+//        int count = 0;
+//
+//        try (Connection conn = writePool.getConnection()) {
+//            return update(conn, sql, psConsumer);
+//
+//        } catch (SQLException e) {
+//            logSQLException(e, sql, null);
+//        }
+//
+//        return count;
+//    }
+//
+//    public int update(Connection conn, String sql, ThrowingConsumer<PreparedStatement> psConsumer) {
+//        int count = 0;
+//
+//        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+//
+//            if (psConsumer != null)
+//                psConsumer.accept(ps);
+//
+//            ps.executeUpdate();
+//            count = ps.getUpdateCount();
+//
+//        } catch (SQLException e) {
+//            logSQLException(e, sql, null);
+//        }
+//
+//        return count;
+//    }
+
     public int update(String sql, ThrowingConsumer<PreparedStatement> preparedStatementConsumer) {
         int count = 0;
 
@@ -156,7 +193,7 @@ public class MysqlDB {
     }
 
 //    public void transaction(ThrowingConsumer<Connection> connectionConsumer) {
-//        try (Connection conn = pool.getConnection()) {
+//        try (Connection conn = writePool.getConnection()) {
 //            conn.setAutoCommit(false);
 //            connectionConsumer.accept(conn);
 //            conn.commit();
