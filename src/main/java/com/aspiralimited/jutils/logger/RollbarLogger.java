@@ -20,7 +20,7 @@ public class RollbarLogger {
         synchronized (RollbarLogger.class) {
             Config config = ConfigBuilder.withAccessToken(accessToken)
                     .environment(environment)
-                    .codeVersion("1.2.0")
+                    .codeVersion("1.2.1")
                     .build();
             RollbarLogger.rollbar = Rollbar.init(config);
         }
