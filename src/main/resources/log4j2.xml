@@ -56,8 +56,8 @@
     <Loggers>
         <Root level="ALL" includeLocation="false">
             <AppenderRef ref="CONSOLE" level="DEBUG"/>
-            <AppenderRef ref="FILE_ALL_ASYNC" level="${all-to-file-level}"/>
-            <AppenderRef ref="FILE_WITH_PROBLEMS" level="WARN"/>
+            <!--<AppenderRef ref="FILE_ALL_ASYNC" level="${all-to-file-level}"/>-->
+            <!--<AppenderRef ref="FILE_WITH_PROBLEMS" level="WARN"/>-->
         </Root>
     </Loggers>
 </Configuration>
