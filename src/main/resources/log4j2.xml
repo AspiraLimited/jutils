@@ -31,33 +31,11 @@
         <Console name="CONSOLE" target="SYSTEM_ERR">
             <PatternLayout pattern="${console-pattern}"/>
         </Console>
-
-        <!-- All logs from root to file -->
-        <File name="FILE_ALL"
-              fileName="log/all.log"
-              immediateFlush="false"
-              append="true"
-              bufferSize="${all-file-bufferSize}">
-            <PatternLayout pattern="${all-to-file-pattern}"/>
-        </File>
-
-        <Async name="FILE_ALL_ASYNC" blocking="false" bufferSize="${all-async-queue-length}" ignoreExceptions="false"
-               includeLocation="false">
-            <AppenderRef ref="FILE_ALL"/>
-        </Async>
-
-        <!-- All WARN's to swparate file -->
-        <File name="FILE_WITH_PROBLEMS" fileName="${problems-filename}">
-            <PatternLayout pattern="${problems-pattern}"/>
-        </File>
-
     </Appenders>
 
     <Loggers>
         <Root level="ALL" includeLocation="false">
             <AppenderRef ref="CONSOLE" level="DEBUG"/>
-            <!--<AppenderRef ref="FILE_ALL_ASYNC" level="${all-to-file-level}"/>-->
-            <!--<AppenderRef ref="FILE_WITH_PROBLEMS" level="WARN"/>-->
         </Root>
     </Loggers>
 </Configuration>
