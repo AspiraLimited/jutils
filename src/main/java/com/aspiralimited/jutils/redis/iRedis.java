@@ -33,6 +33,10 @@ public interface iRedis extends ExternalStorage {
 
     Long sadd(final String key, final String... member);
 
+    default Long sadd(final String key, final Set<String> member) {
+        return sadd(key, member.toArray(new String[]{}));
+    }
+
     Long incr(final String key);
 
     Set<String> smembers(final String key);
