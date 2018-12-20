@@ -127,6 +127,11 @@ public class RedisClusterPooled implements iRedis {
     }
 
     @Override
+    public Long srem(String key, String... members) {
+        return execute(() -> cluster.srem(key));
+    }
+
+    @Override
     public Set<String> keys(String pattern) {
         // Redis cluster не поддерживает keys метод, нужно опросить все ноды
         Set<String> keys = new HashSet<>();

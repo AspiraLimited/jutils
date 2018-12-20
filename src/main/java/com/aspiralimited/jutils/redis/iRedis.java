@@ -37,6 +37,8 @@ public interface iRedis extends ExternalStorage {
 
     Set<String> smembers(final String key);
 
+    Long srem(final String key, final String... members);
+
     Set<String> keys(String pattern);
 
     List<String> mget(String... keys);

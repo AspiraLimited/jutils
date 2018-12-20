@@ -145,6 +145,13 @@ public class RedisSimplePooled implements iRedis {
     }
 
     @Override
+    public Long srem(String key, String... members) {
+        try (Jedis connection = getResource()) {
+            return connection.srem(key, members);
+        }
+    }
+
+    @Override
     public Set<String> keys(String pattern) {
         try (Jedis connection = getResource()) {
             return connection.keys(pattern);
