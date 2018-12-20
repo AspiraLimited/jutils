@@ -39,6 +39,10 @@ public interface iRedis extends ExternalStorage {
 
     Long srem(final String key, final String... members);
 
+    default Long srem(final String key, Set<String> members) {
+        return srem(key, members.toArray(new String[]{}));
+    }
+
     Set<String> keys(String pattern);
 
     List<String> mget(String... keys);
