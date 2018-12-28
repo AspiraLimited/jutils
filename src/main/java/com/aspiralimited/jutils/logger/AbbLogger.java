@@ -1,10 +1,11 @@
 package com.aspiralimited.jutils.logger;
 
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
 
-import static org.apache.logging.log4j.LogManager.getLogger;
+import static org.slf4j.LoggerFactory.getLogger;
 
 public class AbbLogger {
+
     private final Logger log4j;
 
     private String className; // TODO
@@ -143,7 +144,6 @@ public class AbbLogger {
         log4j.error(msg);
 
         NewRelicLogger.error(className, msg);
-        AirbrakeLogger.error(className, msg);
         RollbarLogger.error(className, msg);
     }
 
@@ -151,7 +151,6 @@ public class AbbLogger {
         log4j.error("{}", throwable);
 
         NewRelicLogger.error(className, throwable);
-        AirbrakeLogger.error(className, throwable);
         RollbarLogger.error(className, throwable);
     }
 
@@ -159,7 +158,6 @@ public class AbbLogger {
         log4j.error(msg, object);
 
         NewRelicLogger.error(className, msg, object);
-        AirbrakeLogger.error(className, msg, object);
         RollbarLogger.error(className, msg, object);
     }
 
@@ -167,7 +165,6 @@ public class AbbLogger {
         log4j.error(msg, obj1, obj2);
 
         NewRelicLogger.error(className, msg, obj1, obj2);
-        AirbrakeLogger.error(className, msg, obj1, obj2);
         RollbarLogger.error(className, msg, obj1, obj2);
     }
 
@@ -175,7 +172,6 @@ public class AbbLogger {
         log4j.error(msg, objects);
 
         NewRelicLogger.error(className, msg, objects);
-        AirbrakeLogger.error(className, msg, objects);
         RollbarLogger.error(className, msg, objects);
     }
 
@@ -183,7 +179,6 @@ public class AbbLogger {
         log4j.error(msg, throwable);
 
         NewRelicLogger.error(className, msg, throwable);
-        AirbrakeLogger.error(className, msg, throwable);
         RollbarLogger.error(className, msg, throwable);
     }
 }
