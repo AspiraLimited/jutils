@@ -11,6 +11,8 @@ public class AbbLogger {
     private String className; // TODO
     private String prefix; // TODO
 
+    private static boolean stackdriverEnabled = false;
+
     public AbbLogger() {
         this(new Error().getStackTrace()[1].getClassName());
     }
@@ -141,50 +143,76 @@ public class AbbLogger {
     }
 
     public void error(String msg) {
-        log4j.error(msg);
+        if (!stackdriverEnabled) {
+            log4j.error(msg);
+        } else {
+            StackdriverLogger.error(className, msg);
+        }
 
-        StackdriverLogger.error(className, msg);
         NewRelicLogger.error(className, msg);
         RollbarLogger.error(className, msg);
     }
 
     public void error(Throwable throwable) {
-        log4j.error("{}", throwable);
+        if (!stackdriverEnabled) {
+            log4j.error("{}", throwable);
+        } else {
+            StackdriverLogger.error(className, throwable);
+        }
 
-        StackdriverLogger.error(className, throwable);
         NewRelicLogger.error(className, throwable);
         RollbarLogger.error(className, throwable);
     }
 
     public void error(String msg, Object object) {
-        log4j.error(msg, object);
+        if (!stackdriverEnabled) {
+            log4j.error(msg, object);
+        } else {
+            StackdriverLogger.error(className, msg, object);
+        }
 
-        StackdriverLogger.error(className, msg, object);
         NewRelicLogger.error(className, msg, object);
         RollbarLogger.error(className, msg, object);
     }
 
     public void error(String msg, Object obj1, Object obj2) {
-        log4j.error(msg, obj1, obj2);
+        if (!stackdriverEnabled) {
+            log4j.error(msg, obj1, obj2);
+        } else {
+            StackdriverLogger.error(className, msg, obj1, obj2);
+        }
 
-        StackdriverLogger.error(className, msg, obj1, obj2);
         NewRelicLogger.error(className, msg, obj1, obj2);
         RollbarLogger.error(className, msg, obj1, obj2);
     }
 
     public void error(String msg, Object... objects) {
-        log4j.error(msg, objects);
+        if (!stackdriverEnabled) {
+            log4j.error(msg, objects);
+        } else {
+            StackdriverLogger.error(className, msg, objects);
+        }
 
-        StackdriverLogger.error(className, msg, objects);
         NewRelicLogger.error(className, msg, objects);
         RollbarLogger.error(className, msg, objects);
     }
 
     public void error(String msg, Throwable throwable) {
-        log4j.error(msg, throwable);
+        if (!stackdriverEnabled) {
+            log4j.error(msg, throwable);
+        } else {
+            StackdriverLogger.error(className, msg, throwable);
+        }
 
-        StackdriverLogger.error(className, msg, throwable);
         NewRelicLogger.error(className, msg, throwable);
         RollbarLogger.error(className, msg, throwable);
+    }
+
+    public static boolean isStackdriverEnabled() {
+        return stackdriverEnabled;
+    }
+
+    public static void setStackdriverEnabled(boolean newState) {
+        stackdriverEnabled = newState;
     }
 }
