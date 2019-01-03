@@ -1,5 +1,7 @@
 package com.aspiralimited.jutils.logger;
 
+import org.apache.logging.log4j.Level;
+import org.junit.Assert;
 import org.junit.Test;
 
 public class AbbLoggerTest {
@@ -13,5 +15,10 @@ public class AbbLoggerTest {
         logger.error("test error msg from jutils");
 
         Thread.sleep(10000);
+    }
+
+    @Test
+    public void levelTest() {
+        Assert.assertTrue(Level.ALL.compareTo(Level.DEBUG) >= 0);
     }
 }

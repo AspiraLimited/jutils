@@ -1,5 +1,7 @@
 package com.aspiralimited.jutils.logger;
 
+import com.google.cloud.logging.Severity;
+import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
 
 import static org.apache.logging.log4j.LogManager.getLogger;
@@ -7,11 +9,9 @@ import static org.apache.logging.log4j.LogManager.getLogger;
 public class AbbLogger {
 
     private final Logger log4j;
-
-    private String className; // TODO
-    private String prefix; // TODO
-
-    private static boolean stackdriverEnabled = false;
+    private String className;
+    private static boolean stackDriverEnabled = false;
+    private static Level level = Level.ALL;
 
     public AbbLogger() {
         this(new Error().getStackTrace()[1].getClassName());
@@ -22,12 +22,20 @@ public class AbbLogger {
         this.log4j = getLogger(className);
     }
 
-    public AbbLogger(Class klass) {
-        this(klass.getSimpleName());
+    public static boolean stackdriverEnabled() {
+        return stackDriverEnabled;
     }
 
-    public void setPrefix(String prefix) {
-        this.prefix = prefix;
+    public static void stackDriverEnabled(boolean stackdriverEnabled) {
+        AbbLogger.stackDriverEnabled = stackdriverEnabled;
+    }
+
+    public static void level(Level level) {
+        AbbLogger.level = level;
+    }
+
+    public AbbLogger(Class klass) {
+        this(klass.getSimpleName());
     }
 
     public void trace(String s) {
@@ -74,145 +82,182 @@ public class AbbLogger {
         log4j.trace(s, o, o1, o2, o3, o4, o5, o6, o7, o8, o9);
     }
 
-    public void debug(String s) {
-        log4j.debug(s);
+    public void debug(String msg) {
+        if (level.compareTo(Level.DEBUG) < 0) return;
+
+        if (stackdriverEnabled()) StackdriverLogger.send(Severity.DEBUG, className, msg);
+        else log4j.debug(msg);
     }
 
-    public void debug(String s, Object o) {
-        log4j.debug(s, o);
+    public void debug(String msg, Object object) {
+        if (level.compareTo(Level.DEBUG) < 0) return;
+
+        if (stackdriverEnabled()) StackdriverLogger.send(Severity.DEBUG, className, msg, object);
+        else log4j.debug(msg, object);
     }
 
-    public void debug(String s, Object o, Object o1) {
-        log4j.debug(s, o, o1);
+    public void debug(String msg, Object object1, Object object2) {
+        if (level.compareTo(Level.DEBUG) < 0) return;
+
+        if (stackdriverEnabled()) StackdriverLogger.send(Severity.DEBUG, className, msg, object1, object2);
+        else log4j.debug(msg, object1, object2);
     }
 
-    public void debug(String s, Object... objects) {
-        log4j.debug(s, objects);
+    public void debug(String msg, Object... objects) {
+        if (level.compareTo(Level.DEBUG) < 0) return;
+
+        if (stackdriverEnabled()) StackdriverLogger.send(Severity.DEBUG, className, msg, objects);
+        else log4j.debug(msg, objects);
     }
 
-    public void debug(String s, Throwable throwable) {
-        log4j.debug(s, throwable);
+    public void debug(String msg, Throwable throwable) {
+        if (level.compareTo(Level.DEBUG) < 0) return;
+
+        if (stackdriverEnabled()) StackdriverLogger.send(Severity.DEBUG, className, msg, throwable);
+        else log4j.debug(msg, throwable);
     }
 
-    public void info(String s) {
-        log4j.info(s);
+    public void info(String msg) {
+        if (level.compareTo(Level.INFO) < 0) return;
+
+        if (stackdriverEnabled()) StackdriverLogger.send(Severity.INFO, className, msg);
+        else log4j.info(msg);
     }
 
     public void info(Throwable throwable) {
-        log4j.info("{}", throwable);
+        if (level.compareTo(Level.INFO) < 0) return;
+
+        if (stackdriverEnabled()) StackdriverLogger.send(Severity.INFO, className, throwable);
+        else log4j.info("{}", throwable);
     }
 
-    public void info(String s, Object o) {
-        log4j.info(s, o);
+    public void info(String msg, Object object) {
+        if (level.compareTo(Level.INFO) < 0) return;
+
+        if (stackdriverEnabled()) StackdriverLogger.send(Severity.INFO, className, msg, object);
+        else log4j.info(msg, object);
     }
 
-    public void info(String s, Object o, Object o1) {
-        log4j.info(s, o, o1);
+    public void info(String msg, Object object1, Object object2) {
+        if (level.compareTo(Level.INFO) < 0) return;
+
+        if (stackdriverEnabled()) StackdriverLogger.send(Severity.INFO, className, msg, object1, object2);
+        else log4j.info(msg, object1, object2);
     }
 
-    public void info(String s, Object... objects) {
-        log4j.info(s, objects);
+    public void info(String msg, Object... objects) {
+        if (level.compareTo(Level.INFO) < 0) return;
+
+        if (stackdriverEnabled()) StackdriverLogger.send(Severity.INFO, className, msg, objects);
+        else log4j.info(msg, objects);
     }
 
-    public void info(String s, Throwable throwable) {
-        log4j.info(s, throwable);
+    public void info(String msg, Throwable throwable) {
+        if (level.compareTo(Level.INFO) < 0) return;
+
+        if (stackdriverEnabled()) StackdriverLogger.send(Severity.INFO, className, msg, throwable);
+        else log4j.info(msg, throwable);
     }
 
-    public void warn(String s) {
-        log4j.warn(s);
+    public void warn(String msg) {
+        if (level.compareTo(Level.WARN) < 0) return;
+
+        if (stackdriverEnabled()) StackdriverLogger.send(Severity.WARNING, className, msg);
+        else log4j.warn(msg);
     }
 
-    public void warn(String s, Object o) {
-        log4j.warn(s, o);
+    public void warn(String msg, Object object) {
+        if (level.compareTo(Level.WARN) < 0) return;
+
+        if (stackdriverEnabled()) StackdriverLogger.send(Severity.WARNING, className, msg, object);
+        else log4j.warn(msg, object);
     }
 
-    public void warn(String s, Object... objects) {
-        log4j.warn(s, objects);
+    public void warn(String msg, Object... objects) {
+        if (level.compareTo(Level.WARN) < 0) return;
+
+        if (stackdriverEnabled()) StackdriverLogger.send(Severity.WARNING, className, msg, objects);
+        else log4j.warn(msg, objects);
     }
 
-    public void warn(String s, Object o, Object o1) {
-        log4j.warn(s, o, o1);
+    public void warn(String msg, Object o, Object o1) {
+        if (level.compareTo(Level.WARN) < 0) return;
+
+        if (stackdriverEnabled()) StackdriverLogger.send(Severity.WARNING, className, msg, o, o1);
+        else log4j.warn(msg, o, o1);
     }
 
-    public void warn(String s, Throwable throwable) {
-        log4j.warn(s, throwable);
+    public void warn(String msg, Throwable throwable) {
+        if (level.compareTo(Level.WARN) < 0) return;
+
+        if (stackdriverEnabled()) StackdriverLogger.send(Severity.WARNING, className, msg, throwable);
+        else log4j.warn(msg, throwable);
     }
 
     public void warn(Throwable throwable) {
-        log4j.warn("{}", throwable);
+        if (level.compareTo(Level.WARN) < 0) return;
+
+        if (stackdriverEnabled()) StackdriverLogger.send(Severity.WARNING, className, throwable);
+        else log4j.warn("{}", throwable);
     }
 
     public void error(String msg) {
-        if (!stackdriverEnabled) {
-            log4j.error(msg);
-        } else {
-            StackdriverLogger.error(className, msg);
-        }
+        if (level.compareTo(Level.ERROR) < 0) return;
+
+        if (stackdriverEnabled()) StackdriverLogger.send(Severity.ERROR, className, msg);
+        else log4j.error(msg);
 
         NewRelicLogger.error(className, msg);
         RollbarLogger.error(className, msg);
     }
 
     public void error(Throwable throwable) {
-        if (!stackdriverEnabled) {
-            log4j.error("{}", throwable);
-        } else {
-            StackdriverLogger.error(className, throwable);
-        }
+        if (level.compareTo(Level.ERROR) < 0) return;
+
+        if (stackdriverEnabled()) StackdriverLogger.send(Severity.ERROR, className, throwable);
+        else log4j.error("{}", throwable);
 
         NewRelicLogger.error(className, throwable);
         RollbarLogger.error(className, throwable);
     }
 
     public void error(String msg, Object object) {
-        if (!stackdriverEnabled) {
-            log4j.error(msg, object);
-        } else {
-            StackdriverLogger.error(className, msg, object);
-        }
+        if (level.compareTo(Level.ERROR) < 0) return;
+
+        if (stackdriverEnabled()) StackdriverLogger.send(Severity.ERROR, className, msg, object);
+        else log4j.error(msg, object);
 
         NewRelicLogger.error(className, msg, object);
         RollbarLogger.error(className, msg, object);
     }
 
     public void error(String msg, Object obj1, Object obj2) {
-        if (!stackdriverEnabled) {
-            log4j.error(msg, obj1, obj2);
-        } else {
-            StackdriverLogger.error(className, msg, obj1, obj2);
-        }
+        if (level.compareTo(Level.ERROR) < 0) return;
+
+        if (stackdriverEnabled()) StackdriverLogger.send(Severity.ERROR, className, msg, obj1, obj2);
+        else log4j.error(msg, obj1, obj2);
 
         NewRelicLogger.error(className, msg, obj1, obj2);
         RollbarLogger.error(className, msg, obj1, obj2);
     }
 
     public void error(String msg, Object... objects) {
-        if (!stackdriverEnabled) {
-            log4j.error(msg, objects);
-        } else {
-            StackdriverLogger.error(className, msg, objects);
-        }
+        if (level.compareTo(Level.ERROR) < 0) return;
+
+        if (stackdriverEnabled()) StackdriverLogger.send(Severity.ERROR, className, msg, objects);
+        else log4j.error(msg, objects);
 
         NewRelicLogger.error(className, msg, objects);
         RollbarLogger.error(className, msg, objects);
     }
 
     public void error(String msg, Throwable throwable) {
-        if (!stackdriverEnabled) {
-            log4j.error(msg, throwable);
-        } else {
-            StackdriverLogger.error(className, msg, throwable);
-        }
+        if (level.compareTo(Level.ERROR) < 0) return;
+
+        if (stackdriverEnabled()) StackdriverLogger.send(Severity.ERROR, className, msg, throwable);
+        else log4j.error(msg, throwable);
 
         NewRelicLogger.error(className, msg, throwable);
         RollbarLogger.error(className, msg, throwable);
-    }
-
-    public static boolean isStackdriverEnabled() {
-        return stackdriverEnabled;
-    }
-
-    public static void setStackdriverEnabled(boolean newState) {
-        stackdriverEnabled = newState;
     }
 }
