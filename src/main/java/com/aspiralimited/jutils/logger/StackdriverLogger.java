@@ -1,53 +1,49 @@
 package com.aspiralimited.jutils.logger;
 
-import com.google.cloud.MonitoredResource;
-import com.google.cloud.logging.*;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.logging.log4j.Level;
 
 import java.util.Arrays;
+import java.util.Map;
 
-import static java.util.Collections.singleton;
-import static java.util.stream.Collectors.joining;
+import static java.lang.Thread.currentThread;
 
 public class StackdriverLogger {
 
-    private static final Logging stackdriver = LoggingOptions.getDefaultInstance().getService();
-
-    public static void send(Severity severity, String className, String msg) {
-        LogEntry entry = LogEntry.newBuilder(Payload.StringPayload.of(msg))
-                .setSeverity(severity)
-                .setLogName(className)
-                .setResource(MonitoredResource.newBuilder("global").build())
-                .build();
-
-        stackdriver.write(singleton(entry));
+    public static void send(Level level, String className, String msg) {
+        send(level, className, msg, msg);
     }
 
-    public static void send(Severity severity, String className, String msg, Object object) {
-        msg += "\n" + object.toString();
-        send(severity, className, msg);
+    public static void send(Level level, String className, String msg, Object object) {
+        Map<String, Object> map = Map.of(
+                "severity", level == Level.WARN ? "WARNING" : level.getStandardLevel().toString(),
+                "thread", currentThread().getId(),
+                "name", className,
+                "message", msg,
+                "payload", object
+        );
+
+        try {
+            System.out.println(new ObjectMapper().writeValueAsString(map));
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
     }
 
-    public static void send(Severity severity, String className, String msg, Object obj1, Object obj2) {
-        msg += "\n" + obj1.toString() + "\n" + obj2.toString();
-        send(severity, className, msg);
+    public static void send(Level level, String className, String msg, Object obj1, Object obj2) {
+        send(level, className, msg, Arrays.asList(obj1, obj2));
     }
 
-    public static void send(Severity severity, String className, String msg, Object... objects) {
-        msg += Arrays.stream(objects).map(Object::toString).collect(joining("\n", "\n", ""));
-        send(severity, className, msg);
+    public static void send(Level level, String className, String msg, Object... objects) {
+        send(level, className, msg, objects);
     }
 
-    public static void send(Severity severity, String className, String msg, Throwable throwable) {
-        msg += "\n" + throwableToString(throwable);
-        send(severity, className, msg);
+    public static void send(Level level, String className, String msg, Throwable throwable) {
+        send(level, className, msg, throwable);
     }
 
-    public static void send(Severity severity, String className, Throwable throwable) {
-        String msg = "\n" + throwableToString(throwable);
-        send(severity, className, msg);
-    }
-
-    private static String throwableToString(Throwable throwable) {
-        return Arrays.stream(throwable.getStackTrace()).map(StackTraceElement::toString).collect(joining("\n"));
+    public static void send(Level level, String className, Throwable throwable) {
+        send(level, className, throwable.getMessage(), throwable);
     }
 }
