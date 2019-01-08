@@ -1,49 +1,49 @@
 package com.aspiralimited.jutils.logger;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.logging.log4j.Level;
 
-import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Map;
 
 import static java.lang.Thread.currentThread;
 
-public class StackdriverLogger {
+class StackdriverLogger {
 
-    public static void send(Level level, String className, String msg) {
-        send(level, className, msg, msg);
+    static void send(Level level, String className, String msg) {
+        print(level, className, msg, null);
     }
 
-    public static void send(Level level, String className, String msg, Object object) {
-        Map<String, Object> map = Map.of(
-                "severity", level == Level.WARN ? "WARNING" : level.getStandardLevel().toString(),
-                "thread", currentThread().getId(),
-                "name", className,
-                "message", msg,
-                "payload", object
-        );
+    static void send(Level level, String className, String msg, Object... objects) {
+        print(level, className, msg, objects);
+    }
 
+    static void send(Level level, String className, String msg, Throwable throwable) {
+        print(level, className, msg, throwable);
+    }
+
+    static void send(Level level, String className, Throwable throwable) {
+        print(level, className, throwable.getMessage(), throwable);
+    }
+
+    private static void print(Level level, String className, String msg, Object object) {
         try {
+            String severity = (level == Level.WARN) ? "WARNING" : level.getStandardLevel().toString();
+
+            Map<String, Object> map = new HashMap<>(Map.of(
+                    "severity", severity,
+                    "thread", currentThread().getId(),
+                    "name", className,
+                    "message", msg
+
+            ));
+
+            if (object != null) map.put("payload", object);
+
             System.out.println(new ObjectMapper().writeValueAsString(map));
-        } catch (JsonProcessingException e) {
-            e.printStackTrace();
+        } catch (Throwable throwable) {
+            System.out.println(throwable.getMessage());
+            throwable.printStackTrace();
         }
-    }
-
-    public static void send(Level level, String className, String msg, Object obj1, Object obj2) {
-        send(level, className, msg, Arrays.asList(obj1, obj2));
-    }
-
-    public static void send(Level level, String className, String msg, Object... objects) {
-        send(level, className, msg, objects);
-    }
-
-    public static void send(Level level, String className, String msg, Throwable throwable) {
-        send(level, className, msg, throwable);
-    }
-
-    public static void send(Level level, String className, Throwable throwable) {
-        send(level, className, throwable.getMessage(), throwable);
     }
 }
