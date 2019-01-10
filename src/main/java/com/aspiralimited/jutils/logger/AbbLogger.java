@@ -6,11 +6,13 @@ import org.apache.logging.log4j.Logger;
 import static org.apache.logging.log4j.LogManager.getLogger;
 
 public class AbbLogger {
+    private static boolean stackDriverEnabled = false;
+    private static Level level = Level.ALL;
 
     private final Logger log4j;
     private String className;
-    private static boolean stackDriverEnabled = false;
-    private static Level level = Level.ALL;
+    private String prefix; // TODO
+
 
     public AbbLogger() {
         this(new Error().getStackTrace()[1].getClassName());
@@ -35,6 +37,10 @@ public class AbbLogger {
 
     public AbbLogger(Class klass) {
         this(klass.getSimpleName());
+    }
+
+    public void setPrefix(String prefix) {
+        this.prefix = prefix;
     }
 
     public void trace(String s) {
