@@ -6,16 +6,24 @@ import org.apache.logging.log4j.Level;
 import java.util.HashMap;
 import java.util.Map;
 
+import static com.fasterxml.jackson.databind.SerializationFeature.FAIL_ON_EMPTY_BEANS;
 import static java.lang.Thread.currentThread;
 
 class StackdriverLogger {
+
+    private static final ObjectMapper MAPPER = new ObjectMapper().disable(FAIL_ON_EMPTY_BEANS);
 
     static void send(Level level, String className, String msg) {
         print(level, className, msg, null);
     }
 
     static void send(Level level, String className, String msg, Object... objects) {
-        print(level, className, msg, objects);
+        try {
+            msg = String.format(msg, objects);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        print(level, className, msg, null);
     }
 
     static void send(Level level, String className, String msg, Throwable throwable) {
@@ -40,7 +48,7 @@ class StackdriverLogger {
 
             if (object != null) map.put("payload", object);
 
-            System.out.println(new ObjectMapper().writeValueAsString(map));
+            System.out.println(MAPPER.writeValueAsString(map));
         } catch (Throwable throwable) {
             System.out.println(throwable.getMessage());
             throwable.printStackTrace();
