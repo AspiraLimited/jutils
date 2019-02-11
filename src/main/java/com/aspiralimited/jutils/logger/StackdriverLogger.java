@@ -3,7 +3,6 @@ package com.aspiralimited.jutils.logger;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.logging.log4j.Level;
 
-import java.util.HashMap;
 import java.util.Map;
 
 import static com.fasterxml.jackson.databind.SerializationFeature.FAIL_ON_EMPTY_BEANS;
@@ -40,15 +39,14 @@ class StackdriverLogger {
         try {
             String severity = (level == Level.WARN) ? "WARNING" : level.getStandardLevel().toString();
 
-            Map<String, Object> map = new HashMap<>(Map.of(
+            Map<String, Object> map = Map.of(
                     "severity", severity,
                     "thread", currentThread().getId(),
                     "name", className,
-                    "message", msg
+                    "message", msg == null ? "null" : msg,
+                    "payload", object == null ? "" : object
 
-            ));
-
-            if (object != null) map.put("payload", object);
+            );
 
             System.out.println(MAPPER.writeValueAsString(map));
         } catch (Throwable throwable) {
