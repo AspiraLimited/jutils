@@ -19,7 +19,9 @@ class StackdriverLogger {
 
     static void send(Level level, String className, String msg, Object... objects) {
         try {
-            msg = String.format(msg, objects);
+            if (msg != null) {
+                msg = String.format(msg.replaceAll("\\{}", "%s"), objects);
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
