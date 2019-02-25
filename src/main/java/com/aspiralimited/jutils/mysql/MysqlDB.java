@@ -8,6 +8,8 @@ import com.zaxxer.hikari.HikariDataSource;
 import java.io.IOException;
 import java.sql.*;
 
+import static java.sql.Statement.RETURN_GENERATED_KEYS;
+
 
 public class MysqlDB {
     private final static AbbLogger logger = new AbbLogger();
@@ -108,19 +110,19 @@ public class MysqlDB {
         select(sql, null, resultSetConsumer);
     }
 
-    public void select(String sql, ThrowingConsumer<PreparedStatement> preparedStatementConsumer, ThrowingConsumer<ResultSet> resultSetConsumer) {
+    public void select(String sql, ThrowingConsumer<PreparedStatement> psConsumer, ThrowingConsumer<ResultSet> rsConsumer) {
         ResultSet rs = null;
 
         try (Connection conn = readPool.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
 
-            if (preparedStatementConsumer != null)
-                preparedStatementConsumer.accept(ps);
+            if (psConsumer != null)
+                psConsumer.accept(ps);
 
             rs = ps.executeQuery();
 
             while (rs.next())
-                resultSetConsumer.accept(rs);
+                rsConsumer.accept(rs);
 
         } catch (SQLException e) {
             logSQLException(e, sql, null);
@@ -171,14 +173,14 @@ public class MysqlDB {
 //        return count;
 //    }
 
-    public int update(String sql, ThrowingConsumer<PreparedStatement> preparedStatementConsumer) {
+    public int update(String sql, ThrowingConsumer<PreparedStatement> psConsumer) {
         int count = 0;
 
         try (Connection conn = writePool.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
 
-            if (preparedStatementConsumer != null)
-                preparedStatementConsumer.accept(ps);
+            if (psConsumer != null)
+                psConsumer.accept(ps);
 
             ps.executeUpdate();
             count = ps.getUpdateCount();
@@ -202,16 +204,46 @@ public class MysqlDB {
 //        }
 //    }
 
-    public int insert(String sql, ThrowingConsumer<PreparedStatement> preparedStatementConsumer) {
+    public int insert(String sql, ThrowingConsumer<PreparedStatement> psConsumer) {
         int count = 0;
 
         try (Connection conn = writePool.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
 
-            if (preparedStatementConsumer != null)
-                preparedStatementConsumer.accept(ps);
+            if (psConsumer != null)
+                psConsumer.accept(ps);
 
             count = ps.executeUpdate();
+
+        } catch (SQLException e) {
+            logSQLException(e, sql, null);
+
+        }
+
+        return count;
+    }
+
+    // WARN return only the first ID. Do not use for multi inserts
+    public int insert(String sql, ThrowingConsumer<PreparedStatement> psConsumer, ThrowingConsumer<ResultSet> rsConsumer) {
+        int count = 0;
+
+        try (Connection conn = writePool.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql, RETURN_GENERATED_KEYS)) {
+
+            if (psConsumer != null)
+                psConsumer.accept(ps);
+
+            ps.execute();
+
+            ResultSet rs = ps.getGeneratedKeys();
+
+            if (rs.next()) {
+                rsConsumer.accept(rs);
+                count++;
+            }
+
+            while (rs.next())
+                count++;
 
         } catch (SQLException e) {
             logSQLException(e, sql, null);
@@ -226,7 +258,7 @@ public class MysqlDB {
     }
 
     //TODO batchSize
-    public int multiInsert(String sql, ThrowingConsumer<PreparedStatement> preparedStatementConsumer, ThrowingConsumer<SQLException> exception) {
+    public int multiInsert(String sql, ThrowingConsumer<PreparedStatement> psConsumer, ThrowingConsumer<SQLException> exception) {
         int count = 0;
 
         Connection conn = null;
@@ -236,21 +268,25 @@ public class MysqlDB {
             conn = writePool.getConnection();
             conn.setAutoCommit(false);
 
-            ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+            ps = conn.prepareStatement(sql, RETURN_GENERATED_KEYS);
 
-            if (preparedStatementConsumer != null)
-                preparedStatementConsumer.accept(ps);
+            if (psConsumer != null)
+                psConsumer.accept(ps);
 
             int[] counts = ps.executeBatch();
+
             for (int l : counts) {
                 if (l == Statement.SUCCESS_NO_INFO) {
                     count++;
+
                 } else if (l >= 0) {
                     count = (count + l);
+
                 } else if (l == Statement.EXECUTE_FAILED) {
                     // skip counting
                 }
             }
+
             conn.commit();
 
         } catch (SQLException e) {
