@@ -12,6 +12,7 @@ public class InsertTest {
 //        // long time = currentTimeMillis();
 //        long time = 1551100830363L;
 //
+//        mysqlDB(null, "/..").debug(true);
 //        int c = mysqlDB().insert("INSERT INTO hosts(name,node,server_type) VALUES(?, ?, ?),(?, ?, ?) ON DUPLICATE KEY UPDATE name=CONCAT(VALUES(name), '" + currentTimeMillis() + "')", ps -> {
 //            ps.setString(1, "host-" + time);
 //            ps.setString(2, "tmp-node");

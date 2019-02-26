@@ -8,6 +8,7 @@ import com.zaxxer.hikari.HikariDataSource;
 import java.io.IOException;
 import java.sql.*;
 
+import static java.lang.System.currentTimeMillis;
 import static java.sql.Statement.RETURN_GENERATED_KEYS;
 
 
@@ -19,9 +20,15 @@ public class MysqlDB {
     private final HikariDataSource readPool;
     private final HikariDataSource writePool;
 
-    public MysqlDB(String database) throws IOException {
-        this.readPool = initPool("/config/ReadJdbcConfig.json", "read", database);
-        this.writePool = initPool("/config/WriteJdbcConfig.json", "write", database);
+    private boolean debug = false;
+
+    private MysqlDB(String database) throws IOException {
+        this(database, "");
+    }
+
+    private MysqlDB(String database, String prefixPath) throws IOException {
+        this.readPool = initPool((prefixPath == null ? "" : prefixPath) + "/config/ReadJdbcConfig.json", "read", database);
+        this.writePool = initPool((prefixPath == null ? "" : prefixPath) + "/config/WriteJdbcConfig.json", "write", database);
     }
 
     public static MysqlDB mysqlDB() {
@@ -29,17 +36,30 @@ public class MysqlDB {
     }
 
     public static MysqlDB mysqlDB(String database) {
+        return mysqlDB(database, null);
+    }
+
+    public static MysqlDB mysqlDB(String database, String prefixPath) {
         if (mysqlDB != null) return mysqlDB;
 
         synchronized (MysqlDB.class) {
             try {
-                mysqlDB = new MysqlDB(database);
+                mysqlDB = new MysqlDB(database, prefixPath);
             } catch (IOException e) {
                 throw new Error(e);
             }
         }
 
         return mysqlDB;
+    }
+
+    public boolean debug() {
+        return debug;
+    }
+
+    public MysqlDB debug(boolean debug) {
+        this.debug = debug;
+        return this;
     }
 
     public String readStats() {
@@ -111,6 +131,8 @@ public class MysqlDB {
     }
 
     public void select(String sql, ThrowingConsumer<PreparedStatement> psConsumer, ThrowingConsumer<ResultSet> rsConsumer) {
+        long start = currentTimeMillis();
+
         ResultSet rs = null;
 
         try (Connection conn = readPool.getConnection();
@@ -129,6 +151,7 @@ public class MysqlDB {
 
         } finally {
             closeConnections(null, null, rs);
+            if (debug()) logger.debug("SELECT\t" + (currentTimeMillis() - start) + "\t" + sql);
         }
     }
 
@@ -174,6 +197,8 @@ public class MysqlDB {
 //    }
 
     public int update(String sql, ThrowingConsumer<PreparedStatement> psConsumer) {
+        long start = currentTimeMillis();
+
         int count = 0;
 
         try (Connection conn = writePool.getConnection();
@@ -187,6 +212,9 @@ public class MysqlDB {
 
         } catch (SQLException e) {
             logSQLException(e, sql, null);
+
+        } finally {
+            if (debug()) logger.debug("UPDATE\t" + (currentTimeMillis() - start) + "\t" + sql);
 
         }
 
@@ -205,6 +233,8 @@ public class MysqlDB {
 //    }
 
     public int insert(String sql, ThrowingConsumer<PreparedStatement> psConsumer) {
+        long start = currentTimeMillis();
+
         int count = 0;
 
         try (Connection conn = writePool.getConnection();
@@ -218,6 +248,9 @@ public class MysqlDB {
         } catch (SQLException e) {
             logSQLException(e, sql, null);
 
+        } finally {
+            if (debug()) logger.debug("INSERT\t" + (currentTimeMillis() - start) + "\t" + sql);
+
         }
 
         return count;
@@ -225,6 +258,8 @@ public class MysqlDB {
 
     // WARN return only the first ID. Do not use for multi inserts
     public int insert(String sql, ThrowingConsumer<PreparedStatement> psConsumer, ThrowingConsumer<ResultSet> rsConsumer) {
+        long start = currentTimeMillis();
+
         int count = 0;
 
         try (Connection conn = writePool.getConnection();
@@ -248,6 +283,8 @@ public class MysqlDB {
         } catch (SQLException e) {
             logSQLException(e, sql, null);
 
+        } finally {
+            if (debug()) logger.debug("INSERT\t" + (currentTimeMillis() - start) + "\t" + sql);
         }
 
         return count;
@@ -259,6 +296,8 @@ public class MysqlDB {
 
     //TODO batchSize
     public int multiInsert(String sql, ThrowingConsumer<PreparedStatement> psConsumer, ThrowingConsumer<SQLException> exception) {
+        long start = currentTimeMillis();
+
         int count = 0;
 
         Connection conn = null;
@@ -295,6 +334,8 @@ public class MysqlDB {
 
         } finally {
             closeConnections(conn, ps, null);
+
+            if (debug()) logger.debug("INSERT\t" + (currentTimeMillis() - start) + "\t" + sql);
         }
 
         return count;
