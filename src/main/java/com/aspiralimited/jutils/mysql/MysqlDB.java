@@ -151,7 +151,7 @@ public class MysqlDB {
 
         } finally {
             closeConnections(null, null, rs);
-            if (debug()) logger.debug("SELECT\t" + (currentTimeMillis() - start) + "\t" + sql);
+            printDebugInfo(start, "SELECT", sql);
         }
     }
 
@@ -214,7 +214,7 @@ public class MysqlDB {
             logSQLException(e, sql, null);
 
         } finally {
-            if (debug()) logger.debug("UPDATE\t" + (currentTimeMillis() - start) + "\t" + sql);
+            printDebugInfo(start, "UPDATE", sql);
 
         }
 
@@ -249,8 +249,7 @@ public class MysqlDB {
             logSQLException(e, sql, null);
 
         } finally {
-            if (debug()) logger.debug("INSERT\t" + (currentTimeMillis() - start) + "\t" + sql);
-
+            printDebugInfo(start, "INSERT", sql);
         }
 
         return count;
@@ -284,7 +283,8 @@ public class MysqlDB {
             logSQLException(e, sql, null);
 
         } finally {
-            if (debug()) logger.debug("INSERT\t" + (currentTimeMillis() - start) + "\t" + sql);
+            printDebugInfo(start, "INSERT", sql);
+
         }
 
         return count;
@@ -334,8 +334,7 @@ public class MysqlDB {
 
         } finally {
             closeConnections(conn, ps, null);
-
-            if (debug()) logger.debug("INSERT\t" + (currentTimeMillis() - start) + "\t" + sql);
+            printDebugInfo(start, "INSERT", sql);
         }
 
         return count;
@@ -369,6 +368,25 @@ public class MysqlDB {
         } catch (SQLException e) {
             // TODO NewRelic
             logger.error("Error by close Connection: ", e);
+        }
+    }
+
+    private void printDebugInfo(long start, String type, String sql) {
+        if (!debug()) return;
+
+        long duration = (currentTimeMillis() - start);
+
+        String msg = type + "\t" + duration + "\t" + sql;
+
+        if (duration < 10) {
+            logger.debug(msg);
+
+        } else if (duration < 100) {
+            logger.info(msg);
+
+        } else {
+            logger.warn(msg);
+
         }
     }
 }
