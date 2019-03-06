@@ -343,9 +343,9 @@ public class MysqlDB {
     private void logSQLException(SQLException e, String sql, PreparedStatement ps) {
         // TODO NewRelic
         if (ps == null)
-            logger.error("Error by select with sql: '{}'", sql, e);
+            logger.error("Error by sql: '{}'", sql, e);
         else
-            logger.error("Error by select with ps: '{}' {}", ps.toString(), e);
+            logger.error("Error by ps: '{}' {}", ps.toString(), e);
     }
 
     private void closeConnections(Connection conn, PreparedStatement ps, ResultSet rs) {
