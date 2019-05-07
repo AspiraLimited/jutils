@@ -2,14 +2,11 @@ package com.aspiralimited.jutils.mysql;
 
 import java.util.Set;
 
-import static java.util.stream.Collectors.joining;
-
 public class JdbcConfig {
 
     public String driver;
     public String failover;
     public Set<String> hosts;
-    public int port;
     public String database;
     public String username;
     public String password;
@@ -42,7 +39,7 @@ public class JdbcConfig {
     public String url(String database) {
         return "jdbc:mariadb:" +
                 failover + "//" +
-                hosts.stream().map(s -> s + ":" + port).collect(joining(",")) + "/" +
+                String.join(",", hosts) + "/" +
                 (database == null ? this.database : database);
     }
 }
