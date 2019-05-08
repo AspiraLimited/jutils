@@ -1,10 +1,5 @@
 package com.aspiralimited.jutils.mysql;
 
-import org.junit.Test;
-
-import static com.aspiralimited.jutils.mysql.MysqlDB.mysqlDB;
-import static java.lang.System.currentTimeMillis;
-
 public class InsertTest {
 
 //    @Test

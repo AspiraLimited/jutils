@@ -1,8 +1,8 @@
 package com.aspiralimited.jutils.activerecord;
 
 
-import com.aspiralimited.jutils.logger.AbbLogger;
 import com.aspiralimited.jutils.Triple;
+import com.aspiralimited.jutils.logger.AbbLogger;
 
 import java.lang.reflect.Method;
 import java.sql.ResultSet;
