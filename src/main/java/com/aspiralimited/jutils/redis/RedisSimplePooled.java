@@ -124,9 +124,18 @@ public class RedisSimplePooled implements iRedis {
     }
 
     @Override
-    public Long sadd(String key, String... member) {
+    public Long sadd(String key, String... members) {
         try (Jedis connection = getResource()) {
-            return connection.sadd(key, member);
+            return connection.sadd(key, members);
+        }
+    }
+
+    @Override
+    public Long sadd(String key, int ttl, String... member) {
+        try (Jedis connection = getResource()) {
+            Long result = connection.sadd(key, member);
+            connection.expire(key, ttl);
+            return result;
         }
     }
 
@@ -286,6 +295,13 @@ public class RedisSimplePooled implements iRedis {
                 return getResource();
             }
             throw e;
+        }
+    }
+
+    @Override
+    public Long expire(String key, int seconds) {
+        try (Jedis connection = getResource()) {
+            return connection.expire(key, seconds);
         }
     }
 }

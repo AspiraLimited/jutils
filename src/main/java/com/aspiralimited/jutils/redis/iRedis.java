@@ -33,6 +33,8 @@ public interface iRedis extends ExternalStorage {
 
     Long sadd(final String key, final String... member);
 
+    Long sadd(final String key, int seconds, final String... member);
+
     default Long sadd(final String key, final Set<String> member) {
         return sadd(key, member.toArray(new String[]{}));
     }
@@ -80,4 +82,6 @@ public interface iRedis extends ExternalStorage {
     long lpush(String key, String... string);
 
     String lpop(String key);
+
+    Long expire(String key, int seconds);
 }

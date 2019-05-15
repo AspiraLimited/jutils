@@ -111,10 +111,18 @@ public class RedisClusterPooled implements iRedis {
     }
 
     @Override
-    public Long sadd(String key, String... member) {
-        return execute(() -> cluster.sadd(key, member));
+    public Long sadd(String key, String... members) {
+        return execute(() -> cluster.sadd(key, members));
     }
 
+    @Override
+    public Long sadd(String key, int seconds, String... members) {
+        return execute(() -> {
+            Long result = cluster.sadd(key, members);
+            cluster.expire(key, seconds);
+            return result;
+        });
+    }
 
     @Override
     public Long incr(String key) {
@@ -259,5 +267,10 @@ public class RedisClusterPooled implements iRedis {
             }
             throw e;
         }
+    }
+
+    @Override
+    public Long expire(String key, int seconds) {
+        return execute(() -> cluster.expire(key, seconds));
     }
 }
