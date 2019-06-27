@@ -1,6 +1,7 @@
 package com.aspiralimited.jutils.redis;
 
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
@@ -80,6 +81,11 @@ public interface iRedis extends ExternalStorage {
     long ttl(String key);
 
     long lpush(String key, String... string);
+
+    default long lpush(String key, Collection<String> values) {
+        String[] _values = values.toArray(new String[values.size()]);
+        return lpush(key, _values);
+    }
 
     String lpop(String key);
 
