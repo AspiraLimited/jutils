@@ -90,4 +90,6 @@ public interface iRedis extends ExternalStorage {
     String lpop(String key);
 
     Long expire(String key, int seconds);
+
+    Set<String> scan(String pattern);
 }

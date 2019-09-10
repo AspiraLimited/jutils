@@ -4,12 +4,11 @@ import com.aspiralimited.jutils.logger.AbbLogger;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
-import redis.clients.jedis.Jedis;
-import redis.clients.jedis.JedisPool;
-import redis.clients.jedis.JedisPoolConfig;
+import redis.clients.jedis.*;
 import redis.clients.jedis.exceptions.JedisConnectionException;
 
 import java.io.IOException;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -303,5 +302,22 @@ public class RedisSimplePooled implements iRedis {
         try (Jedis connection = getResource()) {
             return connection.expire(key, seconds);
         }
+    }
+
+    @Override
+    public Set<String> scan(String pattern) {
+        Set<String> res = new HashSet<>();
+        try (Jedis connection = getResource()) {
+            ScanParams scanParams = new ScanParams().count(1000).match(pattern);
+            while (true) {
+                String i = "0";
+                ScanResult<String> sr = connection.scan(i, scanParams);
+                res.addAll(sr.getResult());
+                if (sr.getStringCursor().equals("0"))
+                    break;
+            }
+        }
+
+        return res;
     }
 }
