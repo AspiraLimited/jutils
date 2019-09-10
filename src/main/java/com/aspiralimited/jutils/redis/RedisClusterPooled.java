@@ -276,12 +276,17 @@ public class RedisClusterPooled implements iRedis {
         Set<String> res = new HashSet<>();
 
         ScanParams scanParams = new ScanParams().count(1000).match(pattern);
+        String i = "0";
+
         while (true) {
-            String i = "0";
             ScanResult<String> sr = cluster.scan(i, scanParams);
-            res.addAll(sr.getResult());
+            if (!sr.getResult().isEmpty())
+                res.addAll(sr.getResult());
+
             if (sr.getStringCursor().equals("0"))
                 break;
+
+            i = sr.getStringCursor();
         }
 
         return res;
