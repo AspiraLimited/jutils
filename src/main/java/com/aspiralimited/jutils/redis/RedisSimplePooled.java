@@ -317,10 +317,10 @@ public class RedisSimplePooled implements iRedis {
                 if (!sr.getResult().isEmpty())
                     res.addAll(sr.getResult());
 
-                if (sr.getStringCursor().equals("0"))
-                    break;
-
                 i = sr.getStringCursor();
+
+                if (i.equals("0"))
+                    break;
             }
         }
 
