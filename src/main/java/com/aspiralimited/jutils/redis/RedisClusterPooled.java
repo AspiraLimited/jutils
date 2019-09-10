@@ -4,10 +4,7 @@ import com.aspiralimited.jutils.logger.AbbLogger;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
-import redis.clients.jedis.HostAndPort;
-import redis.clients.jedis.Jedis;
-import redis.clients.jedis.JedisCluster;
-import redis.clients.jedis.JedisPool;
+import redis.clients.jedis.*;
 import redis.clients.jedis.exceptions.JedisConnectionException;
 
 import java.io.IOException;
@@ -272,5 +269,26 @@ public class RedisClusterPooled implements iRedis {
     @Override
     public Long expire(String key, int seconds) {
         return execute(() -> cluster.expire(key, seconds));
+    }
+
+    @Override
+    public Set<String> scan(String pattern) {
+        Set<String> res = new HashSet<>();
+
+        ScanParams scanParams = new ScanParams().count(1000).match(pattern);
+        String i = "0";
+
+        while (true) {
+            ScanResult<String> sr = cluster.scan(i, scanParams);
+            if (!sr.getResult().isEmpty())
+                res.addAll(sr.getResult());
+
+            i = sr.getStringCursor();
+
+            if (i.equals("0"))
+                break;
+        }
+
+        return res;
     }
 }
