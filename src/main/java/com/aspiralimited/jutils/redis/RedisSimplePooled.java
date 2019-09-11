@@ -10,6 +10,7 @@ import redis.clients.jedis.exceptions.JedisConnectionException;
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 public class RedisSimplePooled implements iRedis {
@@ -325,5 +326,26 @@ public class RedisSimplePooled implements iRedis {
         }
 
         return res;
+    }
+
+    @Override
+    public Map<String, String> hgetall(String key) {
+        try (Jedis connection = getResource()) {
+            return connection.hgetAll(key);
+        }
+    }
+
+    @Override
+    public void hset(String key, String hashKey, String hashValue) {
+        try (Jedis connection = getResource()) {
+            connection.hset(key, hashKey, hashValue);
+        }
+    }
+
+    @Override
+    public void hdel(String key, String hashKey) {
+        try (Jedis connection = getResource()) {
+            connection.hdel(key, hashKey);
+        }
     }
 }
