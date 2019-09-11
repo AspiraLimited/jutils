@@ -3,6 +3,7 @@ package com.aspiralimited.jutils.redis;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -92,4 +93,10 @@ public interface iRedis extends ExternalStorage {
     Long expire(String key, int seconds);
 
     Set<String> scan(String pattern);
+
+    Map<String, String> hgetall(String key);
+
+    void hset(String key, String hashKey, String hashValue);
+
+    void hdel(String key, String hashKey);
 }
