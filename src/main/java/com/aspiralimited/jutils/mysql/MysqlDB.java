@@ -119,6 +119,10 @@ public class MysqlDB {
             pool.addDataSourceProperty("profileSql", jdbcConfig.profileSql);
             pool.addDataSourceProperty("connectTimeout", jdbcConfig.connectTimeout);
 
+            if (jdbcConfig.transactionIsolation != null && !jdbcConfig.transactionIsolation.isEmpty()) {
+                pool.addDataSourceProperty("transactionIsolation", jdbcConfig.transactionIsolation);
+            }
+
             return pool;
         } catch (IOException e) {
             logger.error("Error by loadConfig " + name + "PoolConnection.", e);
