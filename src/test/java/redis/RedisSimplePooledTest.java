@@ -14,7 +14,7 @@ public class RedisSimplePooledTest {
     @Test
     public void hgetallTest() {
         RedisSimplePooled redis = new RedisSimplePooled();
-
+        redis.del("test");
         redis.hset("test", "key1", "value1");
         Map<String, String> all = redis.hgetall("test");
         Assert.assertEquals("value1", all.get("key1"));
@@ -29,7 +29,9 @@ public class RedisSimplePooledTest {
     @Test
     public void hscanTest() {
         RedisSimplePooled redis = new RedisSimplePooled();
-
+        redis.del("test:1");
+        redis.del("test:2");
+        redis.del("test:3");
         redis.setex("test:1", 60, "1");
         redis.setex("test:2", 60, "1");
         redis.setex("test:3", 60, "1");
