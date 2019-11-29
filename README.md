@@ -2,7 +2,7 @@
 
 Создать файл ~/.m2/settings.xml
 
-`
+```xml
 <settings xmlns="http://maven.apache.org/SETTINGS/1.0.0"
       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
       xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0
@@ -22,6 +22,6 @@
       <profiles/>
       <activeProfiles/>
 </settings>
-`
+```
 
 В поле password прописать токен, сгенерированный тут https://github.com/settings/tokens
