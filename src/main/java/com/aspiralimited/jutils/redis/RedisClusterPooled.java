@@ -306,4 +306,19 @@ public class RedisClusterPooled implements iRedis {
     public void hdel(String key, String hashKey) {
         cluster.hdel(key, hashKey);
     }
+
+    @Override
+    public void hincrBy(String key, String hashKey, long value) {
+        cluster.hincrBy(key, hashKey, value);
+    }
+
+    @Override
+    public String hget(String key, String hashKey) {
+        return cluster.hget(key, hashKey);
+    }
+
+    @Override
+    public Set<String> hkeys(String key) {
+        return cluster.hkeys(key);
+    }
 }
