@@ -348,4 +348,25 @@ public class RedisSimplePooled implements iRedis {
             connection.hdel(key, hashKey);
         }
     }
+
+    @Override
+    public void hincrBy(String key, String hashKey, long value) {
+        try (Jedis connection = getResource()) {
+            connection.hincrBy(key, hashKey, value);
+        }
+    }
+
+    @Override
+    public String hget(String key, String hashKey) {
+        try (Jedis connection = getResource()) {
+            return connection.hget(key, hashKey);
+        }
+    }
+
+    @Override
+    public Set<String> hkeys(String key) {
+        try (Jedis connection = getResource()) {
+            return connection.hkeys(key);
+        }
+    }
 }

@@ -7,6 +7,8 @@ import org.junit.Test;
 import java.util.Map;
 import java.util.Set;
 
+import static java.lang.Integer.parseInt;
+
 public class RedisSimplePooledTest {
 
     @Test
@@ -35,5 +37,20 @@ public class RedisSimplePooledTest {
         Set<String> list = redis.scan("test:*");
 
         Assert.assertEquals(3, list.size());
+    }
+
+    @Test
+    public void hincrByTest() {
+        RedisSimplePooled redis = new RedisSimplePooled();
+        redis.del("test_hincr_by");
+        redis.hincrBy("test_hincr_by", "key1", 22);
+        String v = redis.hget("test_hincr_by", "key1");
+
+        Assert.assertEquals(22, parseInt(v));
+
+        Set<String> keys = redis.hkeys("test_hincr_by");
+        Assert.assertEquals(1, keys.size());
+
+        Assert.assertTrue(keys.contains("key1"));
     }
 }
