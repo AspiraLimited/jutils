@@ -1,6 +1,7 @@
 # jutils
 
 Создать файл ~/.m2/settings.xml
+
 `
 <settings xmlns="http://maven.apache.org/SETTINGS/1.0.0"
       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -22,4 +23,5 @@
       <activeProfiles/>
 </settings>
 `
+
 В поле password прописать токен, сгенерированный тут https://github.com/settings/tokens
