@@ -13,6 +13,7 @@
         <github.maven-plugin>0.12</github.maven-plugin>
         <github.organization>AspiraLimited</github.organization>
         <github.projectName>jutils</github.projectName>
+        <java.version>10</java.version>
     </properties>
 
     <distributionManagement>
@@ -42,8 +43,8 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.0</version>
                 <configuration>
-                    <source>11</source>
-                    <target>11</target>
+                    <source>${java.version}</source>
+                    <target>${java.version}</target>
                 </configuration>
             </plugin>
 
