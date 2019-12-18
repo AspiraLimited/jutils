@@ -3,10 +3,10 @@
   <groupId>com.aspiralimited.bets-repository</groupId>
   <artifactId>messaging-dto</artifactId>
   <versioning>
-    <release>1.5</release>
+    <release>1.6</release>
     <versions>
-      <version>1.5</version>
+      <version>1.6</version>
     </versions>
-    <lastUpdated>20191217103058</lastUpdated>
+    <lastUpdated>20191218074016</lastUpdated>
   </versioning>
 </metadata>
