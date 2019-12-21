@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metadata>
+  <groupId>com.aspiralimited.bets-repository</groupId>
+  <artifactId>bets-repository-parent</artifactId>
+  <versioning>
+    <versions>
+      <version>1.0-SNAPSHOT</version>
+    </versions>
+    <lastUpdated>20191221092835</lastUpdated>
+  </versioning>
+</metadata>
