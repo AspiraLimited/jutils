@@ -40,39 +40,41 @@ public final class RedisStorage {
                         // TODO NewRelic
                         logger.error("Can't load " + PROPERTIES_FILE, e.getCause());
                     }
-
-                    if (Boolean.valueOf(properties.getProperty("cluster"))) {
-                        Set<HostAndPort> nodes = new HashSet<>();
-                        Pattern pattern = Pattern.compile(NODES_REGEX);
-                        Enumeration<?> keys = properties.propertyNames();
-
-                        while (keys.hasMoreElements()) {
-                            String key = keys.nextElement().toString();
-
-                            if (pattern.matcher(key).matches()) {
-                                String host = properties.getProperty(key);
-                                int port = Integer.valueOf(properties.getProperty(key.replaceFirst("host", "port")));
-
-                                nodes.add(new HostAndPort(host, port));
-                            }
-                        }
-
-                        instance = localInstance = new RedisClusterPooled(nodes);
-
-                    } else {
-                        instance = localInstance = new RedisSimplePooled(
-                                properties.getProperty("host", DEFAULT_HOST),
-                                parseInt(properties.getProperty("port", DEFAULT_PORT)));
-                    }
+                    localInstance = instantiateRedisUsingProperties(properties);
                 }
             }
         }
         return localInstance;
     }
 
-    // TODO need ?
-//    @Override
-//    protected void finalize() throws Throwable {
-//        super.finalize();
-//    }
+    // For integration tests
+    public static iRedis instantiateRedisUsingProperties(Properties properties) {
+        iRedis localInstance;
+
+        if (Boolean.valueOf(properties.getProperty("cluster"))) {
+            Set<HostAndPort> nodes = new HashSet<>();
+            Pattern pattern = Pattern.compile(NODES_REGEX);
+            Enumeration<?> keys = properties.propertyNames();
+
+            while (keys.hasMoreElements()) {
+                String key = keys.nextElement().toString();
+
+                if (pattern.matcher(key).matches()) {
+                    String host = properties.getProperty(key);
+                    int port = Integer.valueOf(properties.getProperty(key.replaceFirst("host", "port")));
+
+                    nodes.add(new HostAndPort(host, port));
+                }
+            }
+
+            instance = localInstance = new RedisClusterPooled(nodes);
+
+        } else {
+            instance = localInstance = new RedisSimplePooled(
+                    properties.getProperty("host", DEFAULT_HOST),
+                    parseInt(properties.getProperty("port", DEFAULT_PORT)));
+        }
+        return localInstance;
+    }
+
 }
