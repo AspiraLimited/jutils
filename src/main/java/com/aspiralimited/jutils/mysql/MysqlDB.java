@@ -154,6 +154,14 @@ public class MysqlDB {
         return pool;
     }
 
+    public Connection getSelectConnection() throws SQLException {
+        return readPool.getConnection();
+    }
+
+    public Connection getUpdateConnection() throws SQLException {
+        return writePool.getConnection();
+    }
+
     public void select(String sql, ThrowingConsumer<ResultSet> resultSetConsumer) {
         select(sql, null, resultSetConsumer);
     }
