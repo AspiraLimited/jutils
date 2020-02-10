@@ -3,10 +3,10 @@
   <groupId>com.aspiralimited.bets-repository</groupId>
   <artifactId>api-client</artifactId>
   <versioning>
-    <release>1.2.7</release>
+    <release>1.2.8</release>
     <versions>
-      <version>1.2.7</version>
+      <version>1.2.8</version>
     </versions>
-    <lastUpdated>20200210104458</lastUpdated>
+    <lastUpdated>20200210110302</lastUpdated>
   </versioning>
 </metadata>
