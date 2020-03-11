@@ -22,6 +22,7 @@
         <dependency>
             <groupId>com.aspiralimited</groupId>
             <artifactId>static-config</artifactId>
+            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
