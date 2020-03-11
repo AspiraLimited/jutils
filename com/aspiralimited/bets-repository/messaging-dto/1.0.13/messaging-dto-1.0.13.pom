@@ -28,6 +28,7 @@
         <dependency>
             <groupId>com.aspiralimited</groupId>
             <artifactId>static-config</artifactId>
+            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.projectlombok</groupId>
