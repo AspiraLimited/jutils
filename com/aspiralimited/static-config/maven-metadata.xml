@@ -3,10 +3,9 @@
   <groupId>com.aspiralimited</groupId>
   <artifactId>static-config</artifactId>
   <versioning>
-    <release>1.6.5</release>
     <versions>
-      <version>1.6.5</version>
+      <version>1.0-SNAPSHOT</version>
     </versions>
-    <lastUpdated>20200311160842</lastUpdated>
+    <lastUpdated>20200326155320</lastUpdated>
   </versioning>
 </metadata>
