@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metadata modelVersion="1.1.0">
+  <groupId>com.com.aspiralimited</groupId>
+  <artifactId>workloadbalancer</artifactId>
+  <version>1.1-SNAPSHOT</version>
+  <versioning>
+    <snapshot>
+      <timestamp>20200403.090943</timestamp>
+      <buildNumber>1</buildNumber>
+    </snapshot>
+    <lastUpdated>20200403090943</lastUpdated>
+    <snapshotVersions>
+      <snapshotVersion>
+        <extension>jar</extension>
+        <value>1.1-20200403.090943-1</value>
+        <updated>20200403090943</updated>
+      </snapshotVersion>
+      <snapshotVersion>
+        <extension>pom</extension>
+        <value>1.1-20200403.090943-1</value>
+        <updated>20200403090943</updated>
+      </snapshotVersion>
+      <snapshotVersion>
+        <classifier>sources</classifier>
+        <extension>jar</extension>
+        <value>1.1-20200403.090943-1</value>
+        <updated>20200403090943</updated>
+      </snapshotVersion>
+    </snapshotVersions>
+  </versioning>
+</metadata>
