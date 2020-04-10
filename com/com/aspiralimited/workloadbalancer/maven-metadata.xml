@@ -4,8 +4,8 @@
   <artifactId>workloadbalancer</artifactId>
   <versioning>
     <versions>
-      <version>1.0-SNAPSHOT</version>
+      <version>1.3-SNAPSHOT</version>
     </versions>
-    <lastUpdated>20200320154338</lastUpdated>
+    <lastUpdated>20200410125313</lastUpdated>
   </versioning>
 </metadata>
