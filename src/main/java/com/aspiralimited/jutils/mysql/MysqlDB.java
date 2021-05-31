@@ -53,6 +53,26 @@ public class MysqlDB {
         return mysqlDB;
     }
 
+    // for integration tests
+    public static MysqlDB mysqlDB(JdbcConfig readConfig, JdbcConfig writeConfig, String database) {
+        if (mysqlDB != null) return mysqlDB;
+
+        synchronized (MysqlDB.class) {
+            try {
+                mysqlDB = new MysqlDB(readConfig, writeConfig, database);
+            } catch (IOException e) {
+                throw new Error(e);
+            }
+        }
+
+        return mysqlDB;
+    }
+
+    private MysqlDB(JdbcConfig readConfig, JdbcConfig writeConfig, String database) throws IOException {
+        this.readPool = initPool(readConfig, "read", database);
+        this.writePool = initPool(writeConfig, "write", database);
+    }
+
     public boolean debug() {
         return debug;
     }
@@ -85,45 +105,61 @@ public class MysqlDB {
 
     private HikariDataSource initPool(String fileName, String name, String database) throws IOException {
         try {
-            HikariDataSource pool = new HikariDataSource();
-
             JdbcConfig jdbcConfig = ConfigLoader.loadConfig(JdbcConfig.class, fileName);
-
-            pool.setPoolName("HikariCPPool[" + name + "]");
-            pool.setRegisterMbeans(true);
-
-            pool.setConnectionTimeout(jdbcConfig.connectionTimeout);
-            pool.setIdleTimeout(jdbcConfig.idleTimeout);
-            pool.setMaxLifetime(jdbcConfig.maxLifetime);
-            pool.setDriverClassName(jdbcConfig.driver);
-            pool.setJdbcUrl(jdbcConfig.url(database));
-            pool.setReadOnly(jdbcConfig.isReadOnly);
-            // pool.setLeakDetectionThreshold(15000);
-            // pool.setConnectionTestQuery("SELECT 1");
-            pool.setMaximumPoolSize(jdbcConfig.maximumPoolSize);
-            pool.setValidationTimeout(jdbcConfig.validationTimeout);
-            pool.setLeakDetectionThreshold(jdbcConfig.leakDetectionThreshold);
-
-            pool.addDataSourceProperty("user", jdbcConfig.username);
-            pool.addDataSourceProperty("password", jdbcConfig.password);
-            pool.addDataSourceProperty("characterEncoding", jdbcConfig.characterEncoding);
-            pool.addDataSourceProperty("useSSL", jdbcConfig.useSSL);
-            pool.addDataSourceProperty("cachePrepStmts", jdbcConfig.cachePrepStmts);
-            pool.addDataSourceProperty("prepStmtCacheSize", jdbcConfig.prepStmtCacheSize);
-            pool.addDataSourceProperty("prepStmtCacheSqlLimit", jdbcConfig.prepStmtCacheSqlLimit);
-            pool.addDataSourceProperty("useCompression", jdbcConfig.useCompression);
-            pool.addDataSourceProperty("useUnicode", jdbcConfig.useUnicode);
-            pool.addDataSourceProperty("autoReconnect", jdbcConfig.autoReconnect);
-            pool.addDataSourceProperty("rewriteBatchedStatements", jdbcConfig.rewriteBatchedStatements);
-            pool.addDataSourceProperty("useServerPrepStmts", jdbcConfig.useServerPrepStmts);
-            pool.addDataSourceProperty("profileSql", jdbcConfig.profileSql);
-            pool.addDataSourceProperty("connectTimeout", jdbcConfig.connectTimeout);
-
-            return pool;
+            return initPool(jdbcConfig, name, database);
         } catch (IOException e) {
-            logger.error("Error by loadConfig " + name + "PoolConnection.", e);
+            logger.error("Error in loadConfig(fileName=" + fileName + ")", e);
             throw e;
         }
+    }
+
+    private HikariDataSource initPool(JdbcConfig jdbcConfig, String name, String database) {
+        HikariDataSource pool = new HikariDataSource();
+
+
+        pool.setPoolName("HikariCPPool[" + name + "]");
+        pool.setRegisterMbeans(true);
+
+        pool.setConnectionTimeout(jdbcConfig.connectionTimeout);
+        pool.setIdleTimeout(jdbcConfig.idleTimeout);
+        pool.setMaxLifetime(jdbcConfig.maxLifetime);
+        pool.setDriverClassName(jdbcConfig.driver);
+        pool.setJdbcUrl(jdbcConfig.url(database));
+        pool.setReadOnly(jdbcConfig.isReadOnly);
+        // pool.setLeakDetectionThreshold(15000);
+        // pool.setConnectionTestQuery("SELECT 1");
+        pool.setMaximumPoolSize(jdbcConfig.maximumPoolSize);
+        pool.setValidationTimeout(jdbcConfig.validationTimeout);
+        pool.setLeakDetectionThreshold(jdbcConfig.leakDetectionThreshold);
+
+        pool.addDataSourceProperty("user", jdbcConfig.username);
+        pool.addDataSourceProperty("password", jdbcConfig.password);
+        pool.addDataSourceProperty("characterEncoding", jdbcConfig.characterEncoding);
+        pool.addDataSourceProperty("useSSL", jdbcConfig.useSSL);
+        pool.addDataSourceProperty("cachePrepStmts", jdbcConfig.cachePrepStmts);
+        pool.addDataSourceProperty("prepStmtCacheSize", jdbcConfig.prepStmtCacheSize);
+        pool.addDataSourceProperty("prepStmtCacheSqlLimit", jdbcConfig.prepStmtCacheSqlLimit);
+        pool.addDataSourceProperty("useCompression", jdbcConfig.useCompression);
+        pool.addDataSourceProperty("useUnicode", jdbcConfig.useUnicode);
+        pool.addDataSourceProperty("autoReconnect", jdbcConfig.autoReconnect);
+        pool.addDataSourceProperty("rewriteBatchedStatements", jdbcConfig.rewriteBatchedStatements);
+        pool.addDataSourceProperty("useServerPrepStmts", jdbcConfig.useServerPrepStmts);
+        pool.addDataSourceProperty("profileSql", jdbcConfig.profileSql);
+        pool.addDataSourceProperty("connectTimeout", jdbcConfig.connectTimeout);
+
+        if (jdbcConfig.transactionIsolation != null && !jdbcConfig.transactionIsolation.isEmpty()) {
+            pool.addDataSourceProperty("transactionIsolation", jdbcConfig.transactionIsolation);
+        }
+
+        return pool;
+    }
+
+    public Connection getSelectConnection() throws SQLException {
+        return readPool.getConnection();
+    }
+
+    public Connection getUpdateConnection() throws SQLException {
+        return writePool.getConnection();
     }
 
     public void select(String sql, ThrowingConsumer<ResultSet> resultSetConsumer) {
@@ -160,42 +196,6 @@ public class MysqlDB {
         });
     }
 
-//    public int update(Connection conn, String sql) {
-//        return update(conn, sql, x -> {
-//        });
-//    }
-
-//    public int update(String sql, ThrowingConsumer<PreparedStatement> psConsumer) {
-//        int count = 0;
-//
-//        try (Connection conn = writePool.getConnection()) {
-//            return update(conn, sql, psConsumer);
-//
-//        } catch (SQLException e) {
-//            logSQLException(e, sql, null);
-//        }
-//
-//        return count;
-//    }
-//
-//    public int update(Connection conn, String sql, ThrowingConsumer<PreparedStatement> psConsumer) {
-//        int count = 0;
-//
-//        try (PreparedStatement ps = conn.prepareStatement(sql)) {
-//
-//            if (psConsumer != null)
-//                psConsumer.accept(ps);
-//
-//            ps.executeUpdate();
-//            count = ps.getUpdateCount();
-//
-//        } catch (SQLException e) {
-//            logSQLException(e, sql, null);
-//        }
-//
-//        return count;
-//    }
-
     public int update(String sql, ThrowingConsumer<PreparedStatement> psConsumer) {
         long start = currentTimeMillis();
 
@@ -220,17 +220,6 @@ public class MysqlDB {
 
         return count;
     }
-
-//    public void transaction(ThrowingConsumer<Connection> connectionConsumer) {
-//        try (Connection conn = writePool.getConnection()) {
-//            conn.setAutoCommit(false);
-//            connectionConsumer.accept(conn);
-//            conn.commit();
-//
-//        } catch (SQLException e) {
-//            logSQLException(e, null, null);
-//        }
-//    }
 
     public int insert(String sql, ThrowingConsumer<PreparedStatement> psConsumer) {
         long start = currentTimeMillis();

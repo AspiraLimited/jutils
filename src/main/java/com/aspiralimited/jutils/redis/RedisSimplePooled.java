@@ -4,13 +4,13 @@ import com.aspiralimited.jutils.logger.AbbLogger;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
-import redis.clients.jedis.Jedis;
-import redis.clients.jedis.JedisPool;
-import redis.clients.jedis.JedisPoolConfig;
+import redis.clients.jedis.*;
 import redis.clients.jedis.exceptions.JedisConnectionException;
 
 import java.io.IOException;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 public class RedisSimplePooled implements iRedis {
@@ -302,6 +302,71 @@ public class RedisSimplePooled implements iRedis {
     public Long expire(String key, int seconds) {
         try (Jedis connection = getResource()) {
             return connection.expire(key, seconds);
+        }
+    }
+
+    @Override
+    public Set<String> scan(String pattern) {
+        Set<String> res = new HashSet<>();
+        try (Jedis connection = getResource()) {
+
+            ScanParams scanParams = new ScanParams().count(1000).match(pattern);
+            String i = "0";
+
+            while (true) {
+                ScanResult<String> sr = connection.scan(i, scanParams);
+                if (!sr.getResult().isEmpty())
+                    res.addAll(sr.getResult());
+
+                i = sr.getStringCursor();
+
+                if (i.equals("0"))
+                    break;
+            }
+        }
+
+        return res;
+    }
+
+    @Override
+    public Map<String, String> hgetall(String key) {
+        try (Jedis connection = getResource()) {
+            return connection.hgetAll(key);
+        }
+    }
+
+    @Override
+    public void hset(String key, String hashKey, String hashValue) {
+        try (Jedis connection = getResource()) {
+            connection.hset(key, hashKey, hashValue);
+        }
+    }
+
+    @Override
+    public void hdel(String key, String hashKey) {
+        try (Jedis connection = getResource()) {
+            connection.hdel(key, hashKey);
+        }
+    }
+
+    @Override
+    public void hincrBy(String key, String hashKey, long value) {
+        try (Jedis connection = getResource()) {
+            connection.hincrBy(key, hashKey, value);
+        }
+    }
+
+    @Override
+    public String hget(String key, String hashKey) {
+        try (Jedis connection = getResource()) {
+            return connection.hget(key, hashKey);
+        }
+    }
+
+    @Override
+    public Set<String> hkeys(String key) {
+        try (Jedis connection = getResource()) {
+            return connection.hkeys(key);
         }
     }
 }

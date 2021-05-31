@@ -3,6 +3,8 @@ package com.aspiralimited.jutils.logger;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.logging.log4j.Level;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.Map;
 
 import static com.fasterxml.jackson.databind.SerializationFeature.FAIL_ON_EMPTY_BEANS;
@@ -37,13 +39,20 @@ class StackdriverLogger {
 
     private static void print(Level level, String className, String msg, Object object, int retryCount) {
         String severity = (level == Level.WARN) ? "WARNING" : level.getStandardLevel().toString();
-
+        String payload = "";
+        if (object instanceof Throwable) {
+            StringWriter sw = new StringWriter();
+            PrintWriter pw = new PrintWriter(sw);
+            Throwable t = (Throwable) object;
+            t.printStackTrace(pw);
+            payload = t.getMessage() + "\n" + sw.toString(); // throwable message + stack trace as a string
+        }
         Map<String, Object> map = Map.of(
                 "severity", severity,
                 "thread", currentThread().getId(),
                 "name", className,
                 "message", msg == null ? "null" : msg,
-                "payload", object == null ? "" : object
+                "payload", payload
         );
 
         try {

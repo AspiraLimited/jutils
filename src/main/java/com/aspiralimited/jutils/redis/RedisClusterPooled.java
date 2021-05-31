@@ -4,10 +4,7 @@ import com.aspiralimited.jutils.logger.AbbLogger;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
-import redis.clients.jedis.HostAndPort;
-import redis.clients.jedis.Jedis;
-import redis.clients.jedis.JedisCluster;
-import redis.clients.jedis.JedisPool;
+import redis.clients.jedis.*;
 import redis.clients.jedis.exceptions.JedisConnectionException;
 
 import java.io.IOException;
@@ -272,5 +269,56 @@ public class RedisClusterPooled implements iRedis {
     @Override
     public Long expire(String key, int seconds) {
         return execute(() -> cluster.expire(key, seconds));
+    }
+
+    @Override
+    public Set<String> scan(String pattern) {
+        Set<String> res = new HashSet<>();
+
+        ScanParams scanParams = new ScanParams().count(1000).match(pattern);
+        String i = "0";
+
+        while (true) {
+            ScanResult<String> sr = cluster.scan(i, scanParams);
+            if (!sr.getResult().isEmpty())
+                res.addAll(sr.getResult());
+
+            i = sr.getStringCursor();
+
+            if (i.equals("0"))
+                break;
+        }
+
+        return res;
+    }
+
+    @Override
+    public Map<String, String> hgetall(String key) {
+        return cluster.hgetAll(key);
+    }
+
+    @Override
+    public void hset(String key, String hashKey, String hashValue) {
+        cluster.hset(key, hashKey, hashValue);
+    }
+
+    @Override
+    public void hdel(String key, String hashKey) {
+        cluster.hdel(key, hashKey);
+    }
+
+    @Override
+    public void hincrBy(String key, String hashKey, long value) {
+        cluster.hincrBy(key, hashKey, value);
+    }
+
+    @Override
+    public String hget(String key, String hashKey) {
+        return cluster.hget(key, hashKey);
+    }
+
+    @Override
+    public Set<String> hkeys(String key) {
+        return cluster.hkeys(key);
     }
 }

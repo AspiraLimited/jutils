@@ -7,7 +7,7 @@
 
     <groupId>com.aspiralimited</groupId>
     <artifactId>jutils</artifactId>
-    <version>0.8.3</version>
+    <version>0.8.9</version>
 
     <properties>
         <github.global.server>github</github.global.server>
@@ -17,7 +17,7 @@
 
         <jedis.version>2.9.0</jedis.version>
         <!--<jsoup.version>1.11.2</jsoup.version>-->
-        <jackson.version>2.9.6</jackson.version>
+        <jackson.version>2.10.0.pr1</jackson.version>
         <mariadb.version>2.2.5</mariadb.version>
         <hikaricp.version>3.2.0</hikaricp.version>
     </properties>
@@ -32,6 +32,18 @@
 
     <build>
         <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>attach-sources</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>

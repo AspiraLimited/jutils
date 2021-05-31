@@ -31,6 +31,7 @@ public class JdbcConfig {
     public boolean useServerPrepStmts;
     public long prepStmtCacheSize;
     public long prepStmtCacheSqlLimit;
+    public String transactionIsolation;
 
     public String url() {
         return url(null);
