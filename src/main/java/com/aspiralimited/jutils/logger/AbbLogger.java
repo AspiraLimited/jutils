@@ -6,8 +6,9 @@ import org.apache.logging.log4j.Logger;
 import static org.apache.logging.log4j.LogManager.getLogger;
 
 public class AbbLogger {
-    private static boolean stackDriverEnabled = false;
-    private static Level level = Level.ALL;
+
+    private static volatile boolean stackDriverEnabled = false;
+    private static volatile Level level = Level.ALL;
 
     private final Logger log4j;
     private String className;
