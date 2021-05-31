@@ -7,7 +7,7 @@
 
     <groupId>com.aspiralimited</groupId>
     <artifactId>jutils</artifactId>
-    <version>0.8.9</version>
+    <version>0.8.9.1</version>
 
     <properties>
         <github.global.server>github</github.global.server>
