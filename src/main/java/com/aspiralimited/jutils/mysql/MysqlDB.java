@@ -330,7 +330,6 @@ public class MysqlDB {
     }
 
     private void logSQLException(SQLException e, String sql, PreparedStatement ps) {
-        // TODO NewRelic
         if (ps == null)
             logger.error("Error by sql: '{}'", sql, e);
         else
@@ -342,20 +341,17 @@ public class MysqlDB {
             if (rs != null) rs.close();
         } catch (SQLException e) {
             logger.error("Error by close ResultSet: ", e);
-            // TODO NewRelic
         }
 
         try {
             if (ps != null) ps.close();
         } catch (SQLException e) {
-            // TODO NewRelic
             logger.error("Error by close PreparedStatement: ", e);
         }
 
         try {
             if (conn != null) conn.close();
         } catch (SQLException e) {
-            // TODO NewRelic
             logger.error("Error by close Connection: ", e);
         }
     }

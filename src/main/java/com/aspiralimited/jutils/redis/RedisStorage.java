@@ -37,7 +37,6 @@ public final class RedisStorage {
                     try (InputStream stream = new FileInputStream(System.getProperty("user.dir") + PROPERTIES_FILE)) {
                         properties.load(stream);
                     } catch (IOException e) {
-                        // TODO NewRelic
                         logger.error("Can't load " + PROPERTIES_FILE, e.getCause());
                     }
                     localInstance = instantiateRedisUsingProperties(properties);

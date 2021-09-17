@@ -220,7 +220,6 @@ public class AbbLogger {
         if (stackdriverEnabled()) StackdriverLogger.send(Level.ERROR, className, msg);
         else log4j.error(msg);
 
-        NewRelicLogger.error(className, msg);
         RollbarLogger.error(className, msg);
     }
 
@@ -230,7 +229,6 @@ public class AbbLogger {
         if (stackdriverEnabled()) StackdriverLogger.send(Level.ERROR, className, throwable);
         else log4j.error("{}", throwable);
 
-        NewRelicLogger.error(className, throwable);
         RollbarLogger.error(className, throwable);
     }
 
@@ -240,7 +238,6 @@ public class AbbLogger {
         if (stackdriverEnabled()) StackdriverLogger.send(Level.ERROR, className, msg, object);
         else log4j.error(msg, object);
 
-        NewRelicLogger.error(className, msg, object);
         RollbarLogger.error(className, msg, object);
     }
 
@@ -250,7 +247,6 @@ public class AbbLogger {
         if (stackdriverEnabled()) StackdriverLogger.send(Level.ERROR, className, msg, obj1, obj2);
         else log4j.error(msg, obj1, obj2);
 
-        NewRelicLogger.error(className, msg, obj1, obj2);
         RollbarLogger.error(className, msg, obj1, obj2);
     }
 
@@ -260,7 +256,6 @@ public class AbbLogger {
         if (stackdriverEnabled()) StackdriverLogger.send(Level.ERROR, className, msg, objects);
         else log4j.error(msg, objects);
 
-        NewRelicLogger.error(className, msg, objects);
         RollbarLogger.error(className, msg, objects);
     }
 
@@ -270,7 +265,6 @@ public class AbbLogger {
         if (stackdriverEnabled()) StackdriverLogger.send(Level.ERROR, className, msg, throwable);
         else log4j.error(msg, throwable);
 
-        NewRelicLogger.error(className, msg, throwable);
         RollbarLogger.error(className, msg, throwable);
     }
 }

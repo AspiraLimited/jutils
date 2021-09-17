@@ -52,7 +52,6 @@ public class RedisSimplePooled implements iRedis {
         try {
             json = MAPPER.writeValueAsString(value);
         } catch (JsonProcessingException e) {
-            // TODO NewRelic
             logger.error("error by setObject({}, {})", key, value, e);
         }
 
@@ -66,7 +65,6 @@ public class RedisSimplePooled implements iRedis {
         try {
             json = MAPPER.writeValueAsString(value);
         } catch (JsonProcessingException e) {
-            // TODO NewRelic
             logger.error("error by setObject({}, {}, {}, {}, {})", key, value, nxxx, expx, time, e);
         }
 
@@ -89,7 +87,6 @@ public class RedisSimplePooled implements iRedis {
         try {
             return MAPPER.readValue(json, clazz);
         } catch (Exception e) {
-            // TODO NewRelic
             logger.error("error by get({}, {})", key, clazz, e);
 
             return null;
@@ -116,7 +113,6 @@ public class RedisSimplePooled implements iRedis {
             String json = MAPPER.writeValueAsString(value);
             return connection.setex(key, seconds, json);
         } catch (JsonProcessingException e) {
-            // TODO NewRelic
             logger.error("error by setex({}, {}, {})", key, value, value, e);
         }
 
@@ -231,7 +227,6 @@ public class RedisSimplePooled implements iRedis {
             try {
                 return MAPPER.readValue(json, clazz);
             } catch (IOException e) {
-                // TODO NewRelic
                 logger.error("error by rpop({}, {})", key, clazz, e);
 
                 return null;

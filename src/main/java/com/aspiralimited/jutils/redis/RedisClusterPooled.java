@@ -42,7 +42,6 @@ public class RedisClusterPooled implements iRedis {
         try {
             json = MAPPER.writeValueAsString(value);
         } catch (JsonProcessingException e) {
-            // TODO NewRelic
             logger.error("error by setObject({}, {})", key, value, e);
         }
 
@@ -56,7 +55,6 @@ public class RedisClusterPooled implements iRedis {
         try {
             json = MAPPER.writeValueAsString(value);
         } catch (JsonProcessingException e) {
-            // TODO NewRelic
             logger.error("error by setObject({}, {}, {}, {}, {})", key, value, nxxx, expx, time, e);
         }
 
@@ -77,7 +75,6 @@ public class RedisClusterPooled implements iRedis {
         try {
             return MAPPER.readValue(json, clazz);
         } catch (IOException e) {
-            // TODO NewRelic
             logger.error("error by get({}, {})", key, clazz, e);
 
             return null;
@@ -100,7 +97,6 @@ public class RedisClusterPooled implements iRedis {
             String json = MAPPER.writeValueAsString(value);
             return execute(() -> cluster.setex(key, seconds, json));
         } catch (JsonProcessingException e) {
-            // TODO NewRelic
             logger.error("error by setex({}, {}, {})", key, value, value, e);
         }
 
@@ -147,7 +143,6 @@ public class RedisClusterPooled implements iRedis {
                     keys.addAll(connection.keys(pattern));
                 }
             } catch (Exception e) {
-                // TODO NewRelic
                 logger.error("Error with: " + entry.getKey() + " : " + entry.getValue() + " : " + e.getMessage());
             }
         }
@@ -192,7 +187,6 @@ public class RedisClusterPooled implements iRedis {
             execute(() -> cluster.rpush(key, json));
             execute(() -> cluster.expire(key, seconds));
         } catch (JsonProcessingException e) {
-            // TODO NewRelic
             logger.error("error by rpush({}, {}, {})", key, result, seconds, e);
         }
     }
@@ -216,7 +210,6 @@ public class RedisClusterPooled implements iRedis {
         try {
             return MAPPER.readValue(json, clazz);
         } catch (IOException e) {
-            // TODO NewRelic
             logger.error("error by rpop({}, {})", key, clazz, e);
 
             return null;
