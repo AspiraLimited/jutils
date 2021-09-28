@@ -40,13 +40,6 @@ public class RedisSimplePooled implements iRedis {
     }
 
     @Override
-    public String set(String key, String value, String nxxx, String expx, long time) {
-        try (Jedis connection = getResource()) {
-            return connection.set(key, value, nxxx, expx, time);
-        }
-    }
-
-    @Override
     public String setObject(String key, Object value) {
         String json = null;
         try {
@@ -56,19 +49,6 @@ public class RedisSimplePooled implements iRedis {
         }
 
         return set(key, json);
-    }
-
-    @Override
-    public String setObject(String key, Object value, String nxxx, String expx, long time) {
-        String json = null;
-
-        try {
-            json = MAPPER.writeValueAsString(value);
-        } catch (JsonProcessingException e) {
-            logger.error("error by setObject({}, {}, {}, {}, {})", key, value, nxxx, expx, time, e);
-        }
-
-        return set(key, json, nxxx, expx, time);
     }
 
     @Override
@@ -313,7 +293,7 @@ public class RedisSimplePooled implements iRedis {
                 if (!sr.getResult().isEmpty())
                     res.addAll(sr.getResult());
 
-                i = sr.getStringCursor();
+                i = sr.getCursor();
 
                 if (i.equals("0"))
                     break;

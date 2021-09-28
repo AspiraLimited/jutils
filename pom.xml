@@ -7,7 +7,7 @@
 
     <groupId>com.aspiralimited</groupId>
     <artifactId>jutils</artifactId>
-    <version>0.8.9.2</version>
+    <version>0.8.9.3</version>
 
     <properties>
         <github.global.server>github</github.global.server>
@@ -15,7 +15,7 @@
         <github.organization>AspiraLimited</github.organization>
         <github.projectName>jutils</github.projectName>
 
-        <jedis.version>2.9.0</jedis.version>
+        <jedis.version>3.3.0</jedis.version>
         <!--<jsoup.version>1.11.2</jsoup.version>-->
         <jackson.version>2.10.0.pr1</jackson.version>
         <mariadb.version>2.2.5</mariadb.version>

@@ -17,11 +17,7 @@ public interface iRedis extends ExternalStorage {
         return set(key, String.valueOf(value));
     }
 
-    String set(final String key, final String value, final String nxxx, final String expx, final long time);
-
     String setObject(final String key, final Object value);
-
-    String setObject(final String key, final Object value, final String nxxx, final String expx, final long time);
 
     String get(final String key);
 
