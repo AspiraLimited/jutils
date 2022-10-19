@@ -17,7 +17,7 @@
 
         <jedis.version>3.3.0</jedis.version>
         <!--<jsoup.version>1.11.2</jsoup.version>-->
-        <jackson.version>2.13.2</jackson.version>
+        <jackson.version>2.13.4.1</jackson.version>
         <mariadb.version>2.2.5</mariadb.version>
         <hikaricp.version>3.2.0</hikaricp.version>
     </properties>
@@ -122,7 +122,7 @@ Affected versions >= 2.13.0, <= 2.13.2.0
 Patched version 2.13.2.1
 com.fasterxml.jackson.core:jackson-databind
 jackson-databind is a data-binding package for the Jackson Data Processor. jackson-databind allows a Java stack overflow exception and denial of service via a large depth of nested objects.         -->
-            <version>${jackson.version}.2</version>
+            <version>${jackson.version}</version>
         </dependency>
 
         <dependency>
