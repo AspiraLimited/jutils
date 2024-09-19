@@ -7,10 +7,10 @@
 
     <groupId>com.aspiralimited</groupId>
     <artifactId>jutils</artifactId>
-    <version>0.9.0.2</version>
+    <version>0.9.0.3</version>
 
     <properties>
-        <java.version>17</java.version>
+        <java.version>14</java.version>
         <github.global.server>github</github.global.server>
         <github.maven-plugin>0.12</github.maven-plugin>
         <github.organization>AspiraLimited</github.organization>
