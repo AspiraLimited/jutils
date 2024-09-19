@@ -4,13 +4,13 @@ import com.aspiralimited.jutils.logger.AbbLogger;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
-import redis.clients.jedis.ConnectionPool;
 import redis.clients.jedis.HostAndPort;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisCluster;
+import redis.clients.jedis.JedisPool;
+import redis.clients.jedis.ScanParams;
+import redis.clients.jedis.ScanResult;
 import redis.clients.jedis.exceptions.JedisConnectionException;
-import redis.clients.jedis.params.ScanParams;
-import redis.clients.jedis.resps.ScanResult;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -131,13 +131,12 @@ public class RedisClusterPooled implements iRedis {
     public Set<String> keys(String pattern) {
         // Redis cluster не поддерживает keys метод, нужно опросить все ноды
         Set<String> keys = new HashSet<>();
-
-        Map<String, ConnectionPool> clusterNodes = cluster.getClusterNodes();
-
-        for (Map.Entry<String, ConnectionPool> entry : clusterNodes.entrySet()) {
-            HostAndPort node = HostAndPort.from(entry.getKey());
-            try (Jedis jedis = new Jedis(node)) {
-                keys.addAll(jedis.keys(pattern));
+        for (Map.Entry<String, JedisPool> entry :
+                execute(() -> cluster.getClusterNodes().entrySet())) {
+            try {
+                try (Jedis connection = entry.getValue().getResource()) {
+                    keys.addAll(connection.keys(pattern));
+                }
             } catch (Exception e) {
                 logger.error("Error with: " + entry.getKey() + " : " + entry.getValue() + " : " + e.getMessage());
             }

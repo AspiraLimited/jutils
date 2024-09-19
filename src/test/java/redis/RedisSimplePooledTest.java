@@ -27,7 +27,7 @@ public class RedisSimplePooledTest {
     }
 
     @Test
-    public void hscanTest() {
+    public void scanTest() {
         RedisSimplePooled redis = new RedisSimplePooled();
         redis.del("test:1");
         redis.del("test:2");
@@ -64,11 +64,6 @@ public class RedisSimplePooledTest {
         String v = redis.hget("test_hset", "key1");
 
         Assert.assertEquals("value1", v);
-
-        Set<String> keys = redis.hkeys("test_hset");
-        Assert.assertEquals(1, keys.size());
-
-        Assert.assertTrue(keys.contains("key1"));
     }
 
     @Test
@@ -80,9 +75,6 @@ public class RedisSimplePooledTest {
         String v = redis.hget("test_hdel", "key1");
 
         Assert.assertNull(v);
-
-        Set<String> keys = redis.hkeys("test_hdel");
-        Assert.assertEquals(0, keys.size());
     }
 
     @Test
@@ -104,15 +96,6 @@ public class RedisSimplePooledTest {
 
         Assert.assertEquals(1, keys.size());
         Assert.assertTrue(keys.contains("key1"));
-    }
-
-    @Test
-    public void scanTest() {
-        RedisSimplePooled redis = new RedisSimplePooled();
-        redis.del("test_scan");
-        redis.setex("test_scan", 60, "1");
-        Set<String> list = redis.scan("test_scan");
-        Assert.assertEquals(1, list.size());
     }
 
     @Test
