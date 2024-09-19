@@ -2,10 +2,13 @@ package com.aspiralimited.jutils.redis;
 
 import com.aspiralimited.jutils.logger.AbbLogger;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import redis.clients.jedis.*;
 import redis.clients.jedis.exceptions.JedisConnectionException;
+import redis.clients.jedis.params.ScanParams;
+import redis.clients.jedis.resps.ScanResult;
 
 import java.io.IOException;
 import java.util.*;
@@ -18,7 +21,7 @@ public class RedisClusterPooled implements iRedis {
     private final static ObjectMapper MAPPER = new ObjectMapper().registerModule(new Jdk8Module());
 
     private JedisCluster cluster;
-    private Set<HostAndPort> nodes;
+    private final Set<HostAndPort> nodes;
 
     RedisClusterPooled(Set<HostAndPort> nodes) {
         cluster = new JedisCluster(nodes);
@@ -93,7 +96,7 @@ public class RedisClusterPooled implements iRedis {
     @Override
     public Long sadd(String key, int seconds, String... members) {
         return execute(() -> {
-            Long result = cluster.sadd(key, members);
+            long result = cluster.sadd(key, members);
             cluster.expire(key, seconds);
             return result;
         });
@@ -115,19 +118,25 @@ public class RedisClusterPooled implements iRedis {
     }
 
     @Override
+    @Deprecated
+    /*
+      @deprecated use scan instead
+    */
     public Set<String> keys(String pattern) {
         // Redis cluster не поддерживает keys метод, нужно опросить все ноды
         Set<String> keys = new HashSet<>();
-        for (Map.Entry<String, JedisPool> entry :
-                execute(() -> cluster.getClusterNodes().entrySet())) {
-            try {
-                try (Jedis connection = entry.getValue().getResource()) {
-                    keys.addAll(connection.keys(pattern));
-                }
+
+        Map<String, ConnectionPool> clusterNodes = cluster.getClusterNodes();
+
+        for (Map.Entry<String, ConnectionPool> entry : clusterNodes.entrySet()) {
+            HostAndPort node = HostAndPort.from(entry.getKey());
+            try (Jedis jedis = new Jedis(node)) {
+                keys.addAll(jedis.keys(pattern));
             } catch (Exception e) {
                 logger.error("Error with: " + entry.getKey() + " : " + entry.getValue() + " : " + e.getMessage());
             }
         }
+
         return keys;
     }
 
@@ -144,10 +153,10 @@ public class RedisClusterPooled implements iRedis {
 
     @Override
     public Long del(String... keys) {
-        Long count = 0L;
+        long count = 0L;
 
         for (String key : keys)
-            count = +del(key);
+            count += del(key);
 
         return count;
     }
@@ -253,16 +262,14 @@ public class RedisClusterPooled implements iRedis {
         ScanParams scanParams = new ScanParams().count(1000).match(pattern);
         String i = "0";
 
-        while (true) {
+        do {
             ScanResult<String> sr = cluster.scan(i, scanParams);
             if (!sr.getResult().isEmpty())
                 res.addAll(sr.getResult());
 
             i = sr.getCursor();
 
-            if (i.equals("0"))
-                break;
-        }
+        } while (!i.equals("0"));
 
         return res;
     }

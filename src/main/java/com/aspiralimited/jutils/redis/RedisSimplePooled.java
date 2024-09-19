@@ -6,6 +6,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import redis.clients.jedis.*;
 import redis.clients.jedis.exceptions.JedisConnectionException;
+import redis.clients.jedis.params.ScanParams;
+import redis.clients.jedis.resps.ScanResult;
 
 import java.io.IOException;
 import java.util.HashSet;
@@ -137,6 +139,10 @@ public class RedisSimplePooled implements iRedis {
     }
 
     @Override
+    @Deprecated
+    /*
+      @deprecated use scan instead
+    */
     public Set<String> keys(String pattern) {
         try (Jedis connection = getResource()) {
             return connection.keys(pattern);
@@ -288,16 +294,14 @@ public class RedisSimplePooled implements iRedis {
             ScanParams scanParams = new ScanParams().count(1000).match(pattern);
             String i = "0";
 
-            while (true) {
+            do {
                 ScanResult<String> sr = connection.scan(i, scanParams);
                 if (!sr.getResult().isEmpty())
                     res.addAll(sr.getResult());
 
                 i = sr.getCursor();
 
-                if (i.equals("0"))
-                    break;
-            }
+            } while (!i.equals("0"));
         }
 
         return res;
