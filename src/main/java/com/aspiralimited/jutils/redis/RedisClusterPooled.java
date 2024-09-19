@@ -2,16 +2,22 @@ package com.aspiralimited.jutils.redis;
 
 import com.aspiralimited.jutils.logger.AbbLogger;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
-import redis.clients.jedis.*;
+import redis.clients.jedis.ConnectionPool;
+import redis.clients.jedis.HostAndPort;
+import redis.clients.jedis.Jedis;
+import redis.clients.jedis.JedisCluster;
 import redis.clients.jedis.exceptions.JedisConnectionException;
 import redis.clients.jedis.params.ScanParams;
 import redis.clients.jedis.resps.ScanResult;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.function.Supplier;
 
 
