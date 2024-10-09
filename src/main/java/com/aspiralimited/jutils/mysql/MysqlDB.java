@@ -330,6 +330,12 @@ public class MysqlDB {
     }
 
     private void logSQLException(SQLException e, String sql, PreparedStatement ps) {
+        if (e instanceof SQLTransientConnectionException) {
+            if (ps == null)
+                logger.warn("Error by sql: '{}'", sql, e);
+            else
+                logger.warn("Error by ps: '{}' {}", ps.toString(), e);
+        } else
         if (ps == null)
             logger.error("Error by sql: '{}'", sql, e);
         else
