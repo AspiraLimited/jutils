@@ -6,7 +6,12 @@ import com.aspiralimited.jutils.logger.AbbLogger;
 import com.zaxxer.hikari.HikariDataSource;
 
 import java.io.IOException;
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.SQLTransientConnectionException;
+import java.sql.Statement;
 
 import static java.lang.System.currentTimeMillis;
 import static java.sql.Statement.RETURN_GENERATED_KEYS;
@@ -330,13 +335,12 @@ public class MysqlDB {
     }
 
     private void logSQLException(SQLException e, String sql, PreparedStatement ps) {
-        if (e instanceof SQLTransientConnectionException) {
+        if (e instanceof SQLTransientConnectionException || e.getMessage().contains("Interrupted")) {
             if (ps == null)
                 logger.warn("Error by sql: '{}'", sql, e);
             else
                 logger.warn("Error by ps: '{}' {}", ps.toString(), e);
-        } else
-        if (ps == null)
+        } else if (ps == null)
             logger.error("Error by sql: '{}'", sql, e);
         else
             logger.error("Error by ps: '{}' {}", ps.toString(), e);
