@@ -151,6 +151,7 @@ public class MysqlDB {
         pool.addDataSourceProperty("useServerPrepStmts", jdbcConfig.useServerPrepStmts);
         pool.addDataSourceProperty("profileSql", jdbcConfig.profileSql);
         pool.addDataSourceProperty("connectTimeout", jdbcConfig.connectTimeout);
+        pool.addDataSourceProperty("allowPublicKeyRetrieval", true);
 
         if (jdbcConfig.transactionIsolation != null && !jdbcConfig.transactionIsolation.isEmpty()) {
             pool.addDataSourceProperty("transactionIsolation", jdbcConfig.transactionIsolation);
