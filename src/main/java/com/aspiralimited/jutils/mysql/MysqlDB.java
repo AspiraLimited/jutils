@@ -152,6 +152,7 @@ public class MysqlDB {
         pool.addDataSourceProperty("profileSql", jdbcConfig.profileSql);
         pool.addDataSourceProperty("connectTimeout", jdbcConfig.connectTimeout);
         pool.addDataSourceProperty("allowPublicKeyRetrieval", true);
+        pool.addDataSourceProperty("connectionTimeZone", "UTC");
 
         if (jdbcConfig.transactionIsolation != null && !jdbcConfig.transactionIsolation.isEmpty()) {
             pool.addDataSourceProperty("transactionIsolation", jdbcConfig.transactionIsolation);
