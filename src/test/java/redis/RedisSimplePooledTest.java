@@ -71,7 +71,7 @@ public class RedisSimplePooledTest {
         RedisSimplePooled redis = new RedisSimplePooled();
         redis.del("test_hdel");
         redis.hset("test_hdel", "key1", "value1");
-        redis.hdel("test_hdel", "key1");
+        redis.hdel("test_hdel", "key1", "key2");
         String v = redis.hget("test_hdel", "key1");
 
         Assert.assertNull(v);

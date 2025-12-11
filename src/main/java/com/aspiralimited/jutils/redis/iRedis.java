@@ -94,7 +94,7 @@ public interface iRedis extends ExternalStorage {
 
     void hset(String key, String hashKey, String hashValue);
 
-    void hdel(String key, String hashKey);
+    void hdel(String key, String... fields);
 
     void hincrBy(String key, String hashKey, long value);
 

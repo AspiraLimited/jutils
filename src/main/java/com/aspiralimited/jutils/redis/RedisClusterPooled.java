@@ -290,8 +290,8 @@ public class RedisClusterPooled implements iRedis {
     }
 
     @Override
-    public void hdel(String key, String hashKey) {
-        cluster.hdel(key, hashKey);
+    public void hdel(String key, String... fields) {
+        cluster.hdel(key, fields);
     }
 
     @Override
