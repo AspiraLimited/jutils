@@ -5,12 +5,10 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import redis.clients.jedis.HostAndPort;
-import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisCluster;
-import redis.clients.jedis.JedisPool;
-import redis.clients.jedis.ScanParams;
-import redis.clients.jedis.ScanResult;
 import redis.clients.jedis.exceptions.JedisConnectionException;
+import redis.clients.jedis.params.ScanParams;
+import redis.clients.jedis.resps.ScanResult;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -121,28 +119,6 @@ public class RedisClusterPooled implements iRedis {
     @Override
     public Long srem(String key, String... members) {
         return execute(() -> cluster.srem(key));
-    }
-
-    @Override
-    @Deprecated
-    /*
-      @deprecated use scan instead
-    */
-    public Set<String> keys(String pattern) {
-        // Redis cluster не поддерживает keys метод, нужно опросить все ноды
-        Set<String> keys = new HashSet<>();
-        for (Map.Entry<String, JedisPool> entry :
-                execute(() -> cluster.getClusterNodes().entrySet())) {
-            try {
-                try (Jedis connection = entry.getValue().getResource()) {
-                    keys.addAll(connection.keys(pattern));
-                }
-            } catch (Exception e) {
-                logger.error("Error with: " + entry.getKey() + " : " + entry.getValue() + " : " + e.getMessage());
-            }
-        }
-
-        return keys;
     }
 
     @Override
