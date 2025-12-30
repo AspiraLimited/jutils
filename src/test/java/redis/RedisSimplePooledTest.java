@@ -106,4 +106,59 @@ public class RedisSimplePooledTest {
         String v = redis.get("test_setex");
         Assert.assertEquals("1", v);
     }
+
+    @Test
+    public void hdelMultipleFieldsTest() {
+        RedisSimplePooled redis = new RedisSimplePooled();
+        redis.del("test_hdel_multi");
+
+        redis.hset("test_hdel_multi", "key1", "value1");
+        redis.hset("test_hdel_multi", "key2", "value2");
+        redis.hset("test_hdel_multi", "key3", "value3");
+
+        redis.hdel("test_hdel_multi", "key1", "key2");
+
+        Assert.assertNull(redis.hget("test_hdel_multi", "key1"));
+        Assert.assertNull(redis.hget("test_hdel_multi", "key2"));
+        Assert.assertEquals("value3", redis.hget("test_hdel_multi", "key3"));
+    }
+
+    @Test
+    public void hdelNonExistingFieldTest() {
+        RedisSimplePooled redis = new RedisSimplePooled();
+        redis.del("test_hdel_missing");
+
+        redis.hset("test_hdel_missing", "key1", "value1");
+
+        // Should not throw
+        redis.hdel("test_hdel_missing", "missing_key");
+
+        Assert.assertEquals("value1", redis.hget("test_hdel_missing", "key1"));
+    }
+
+    @Test
+    public void hdelOnEmptyHashTest() {
+        RedisSimplePooled redis = new RedisSimplePooled();
+        redis.del("test_hdel_empty");
+
+        // Should not throw
+        redis.hdel("test_hdel_empty", "key1");
+
+        Map<String, String> all = redis.hgetall("test_hdel_empty");
+        Assert.assertTrue(all.isEmpty());
+    }
+
+    @Test
+    public void hdelCompatibilityRegressionTest() {
+        RedisSimplePooled redis = new RedisSimplePooled();
+        redis.del("test_hdel_regression");
+
+        redis.hset("test_hdel_regression", "key1", "value1");
+
+        // This used to throw NoSuchMethodError with mismatched Jedis
+        redis.hdel("test_hdel_regression", "key1");
+
+        Assert.assertNull(redis.hget("test_hdel_regression", "key1"));
+    }
+
 }

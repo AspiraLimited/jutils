@@ -7,7 +7,7 @@
 
     <groupId>com.aspiralimited</groupId>
     <artifactId>jutils</artifactId>
-    <version>1.0.0.0</version>
+    <version>1.0.0.1</version>
 
     <properties>
         <java.version>21</java.version>

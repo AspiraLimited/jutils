@@ -315,7 +315,9 @@ public class RedisSimplePooled implements iRedis {
     @Override
     public void hdel(String key, String... fields) {
         try (Jedis connection = getResource()) {
-            connection.hdel(key, fields);
+            for (String field : fields) {
+                connection.hdel(key, field);
+            }
         }
     }
 
