@@ -96,12 +96,16 @@ public class MysqlDB {
     }
 
     private String stats(HikariDataSource pool) {
-        return pool.getPoolName() +
-                " total:" + pool.getHikariPoolMXBean().getTotalConnections() +
-                " idle:" + pool.getHikariPoolMXBean().getIdleConnections() +
-                " active:" + pool.getHikariPoolMXBean().getActiveConnections() +
-                " threads awaiting:" + pool.getHikariPoolMXBean().getThreadsAwaitingConnection()
-                ;
+        var mxBean = pool.getHikariPoolMXBean();
+        if (mxBean == null) {
+            return pool.getPoolName() + " not initialized yet";
+        }
+
+        return pool.getPoolName()
+                + " total:" + mxBean.getTotalConnections()
+                + " idle:" + mxBean.getIdleConnections()
+                + " active:" + mxBean.getActiveConnections()
+                + " threads awaiting:" + mxBean.getThreadsAwaitingConnection();
     }
 
     private HikariDataSource initPool(String fileName, String name) throws IOException {
